@@ -1,2455 +1,1396 @@
-/* =========================================================
-   NIGRUM STARE
-   Main JavaScript
-   ========================================================= */
-
-'use strict';
-
-
-/* =========================================================
-   FRAME SETTINGS
-   ========================================================= */
-
-const TOTAL_FRAMES = 83;
-
-const FRAME_PREFIX = 'frames/ezgif-frame-';
-
-const FRAME_EXT = '.jpg';
-
-
-/*
-   COMPLETE ANIMATION SPEED
-
-   15000ms = 15 seconds for the
-   complete animation.
-
-   001 → 083 → 001 → 083 → forever
-*/
-
-const AUTO_PLAY_DURATION = 15000;
-
-
-/* =========================================================
-   STAGES
-   ========================================================= */
-
-const STAGES = [
-  {
-    name: '01 / THREAD',
-    range: [0, 13]
-  },
-
-  {
-    name: '02 / FABRIC',
-    range: [14, 29]
-  },
-
-  {
-    name: '03 / CUT',
-    range: [30, 41]
-  },
-
-  {
-    name: '04 / SEW',
-    range: [42, 55]
-  },
-
-  {
-    name: '05 / FINISH',
-    range: [56, 65]
-  },
-
-  {
-    name: '06 / FORM',
-    range: [66, 74]
-  },
-
-  {
-    name: '07 / NIGRUM STARE',
-    range: [75, 82]
-  }
-];
-
-
-/* =========================================================
-   PRODUCTS
-   ========================================================= */
-
-const PRODUCTS = [
-
-  {
-    id: 'ns-01',
-    name: 'Signature T-Shirt',
-    price: 140,
-    image: 'assets/products/t 2.jpg',
-    sizes: [
-      'S',
-      'M',
-      'L',
-      'XL',
-      'OVERSIZED'
-    ]
-  },
-
-
-  {
-    id: 'ns-02',
-    name: 'Classic Hoodie',
-    price: 220,
-    image: 'assets/products/hoodie.jpg',
-    sizes: [
-      'S',
-      'M',
-      'L',
-      'XL'
-    ]
-  },
-
-
-  {
-    id: 'ns-03',
-    name: 'Sweat Shirt & Shorts Set',
-    price: 195,
-    image: 'assets/products/t3.jpg',
-    sizes: [
-      'S',
-      'M',
-      'L',
-      'XL'
-    ]
-  },
-
-
-  {
-    id: 'ns-04',
-    name: 'Pro Heavyweight Hoodie',
-    price: 235,
-    image: 'assets/products/HOODIE3.jpg',
-    sizes: [
-      'M',
-      'L',
-      'XL',
-      'OVERSIZED'
-    ]
-  },
-
-
-  {
-    id: 'ns-05',
-    name: 'Structured Tactical Cap',
-    price: 75,
-    image: 'assets/products/cap.jpg',
-    sizes: [
-      'ONE SIZE'
-    ]
-  },
-
-
-  {
-    id: 'ns-06',
-    name: 'Wool Fisherman Beanie',
-    price: 65,
-    image: 'assets/products/ROYBENS 2 Pack Wool Fisherman Beanies for Men, Knit Short Watch Cap Winter Warm Hats.jpg',
-    sizes: [
-      'ONE SIZE'
-    ]
-  },
-
-
-  {
-    id: 'ns-07',
-    name: 'Solid Trucker Hat',
-    price: 70,
-    image: 'assets/products/Men Solid Trucker Hat.jpg',
-    sizes: [
-      'ONE SIZE'
-    ]
-  },
-
-
-  {
-    id: 'ns-08',
-    name: 'Tactical Bandana',
-    price: 45,
-    image: 'assets/products/1pc Quick Dry Sports Bandana.jpg',
-    sizes: [
-      'ONE SIZE'
-    ]
-  },
-
-
-  {
-    id: 'ns-09',
-    name: 'Turban Headwrap',
-    price: 50,
-    image: 'assets/products/Turban.jpg',
-    sizes: [
-      'ONE SIZE'
-    ]
-  }
-
-];
-
-
-/* =========================================================
-   GLOBAL STATE
-   ========================================================= */
-
-const frameImages = [];
-
-let currentFrame = 0;
-
-let targetFrame = 0;
-
-let autoPlaying = false;
-
-let autoPlayStarted = false;
-
-let animationStartTime = 0;
-
-let heroContainer = null;
-
-let heroCanvas = null;
-
-let heroCtx = null;
-
-let heroTitleBlock = null;
-
-let heroScrollHint = null;
-
-let stageIndicator = null;
-
-
-/* =========================================================
-   CART
-   ========================================================= */
-
-const CART_STORAGE_KEY =
-  'nigrum_minimal_cart';
-
-let cart = [];
-
-
-try {
-
-  cart =
-    JSON.parse(
-      localStorage.getItem(
-        CART_STORAGE_KEY
-      )
-    ) || [];
-
-} catch (error) {
-
-  cart = [];
-
-}
-
-
-/* =========================================================
-   DOM READY
-   ========================================================= */
-
-document.addEventListener(
-  'DOMContentLoaded',
-  () => {
-
-    /* -------------------------------------------------------
-       FIND HERO
-       ------------------------------------------------------- */
-
-    heroContainer =
-      document.querySelector(
-        '.hero-scroll'
-      );
-
-
-    heroCanvas =
-      document.querySelector(
-        '#hero-canvas'
-      );
-
-
-    /*
-       Backup in case the canvas
-       does not have the ID.
-    */
-
-    if (!heroCanvas) {
-
-      heroCanvas =
-        document.querySelector(
-          'canvas'
-        );
-
+/**
+ * NIGRUM STARE — LUXURY STREETWEAR
+ * Quiet. Dark. Clean. Expensive. Minimal.
+ */
+
+(function () {
+  'use strict';
+
+  // ============================================================
+  // HERO ANIMATION
+  // ============================================================
+
+  const TOTAL_FRAMES = 83;
+  const FRAME_PREFIX = 'frames/ezgif-frame-';
+  const FRAME_EXT = '.jpg';
+
+  // One complete animation cycle = 15 seconds
+  const AUTO_PLAY_DURATION = 15000;
+
+  const STAGES = [
+    { name: '01 / THREAD', range: [0, 13] },
+    { name: '02 / FABRIC', range: [14, 29] },
+    { name: '03 / CUT', range: [30, 41] },
+    { name: '04 / SEW', range: [42, 55] },
+    { name: '05 / FINISH', range: [56, 65] },
+    { name: '06 / FORM', range: [66, 74] },
+    { name: '07 / NIGRUM STARE', range: [75, 82] }
+  ];
+
+  // ============================================================
+  // PRODUCTS
+  // MEN'S COLLECTION ONLY
+  // ALL PRODUCTS: S / M / L / XL
+  // ============================================================
+
+  const STANDARD_SIZES = ['S', 'M', 'L', 'XL'];
+
+  const PRODUCTS = [
+
+    // ----------------------------------------------------------
+    // T-SHIRTS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-01',
+      name: 'Signature T-Shirt',
+      category: 'T-SHIRTS',
+      price: '$140',
+      priceNum: 140,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Heavyweight cotton jersey with a clean Nigrum Stare silhouette and structured streetwear finish.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-02',
+      name: 'Oversized Essential T-Shirt',
+      category: 'T-SHIRTS',
+      price: '$150',
+      priceNum: 150,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Relaxed oversized silhouette cut from premium heavyweight cotton for an effortless streetwear fit.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-03',
+      name: 'Essential Long Sleeve',
+      category: 'T-SHIRTS',
+      price: '$165',
+      priceNum: 165,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Clean long-sleeve construction with a refined fit and minimal Nigrum Stare identity.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // HOODIES
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-04',
+      name: 'Classic Hoodie',
+      category: 'HOODIES',
+      price: '$220',
+      priceNum: 220,
+      image: 'assets/products/hoodie.jpg',
+      desc: 'Heavyweight French terry hoodie with a structured hood and relaxed luxury streetwear silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-05',
+      name: 'Pro Heavyweight Hoodie',
+      category: 'HOODIES',
+      price: '$235',
+      priceNum: 235,
+      image: 'assets/products/HOODIE3.jpg',
+      desc: 'Dense heavyweight construction designed for a strong architectural silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-06',
+      name: 'Zip Hoodie',
+      category: 'HOODIES',
+      price: '$225',
+      priceNum: 225,
+      image: 'assets/products/hoodie.jpg',
+      desc: 'Minimal full-zip hoodie with a clean premium finish and relaxed masculine profile.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // SHIRTS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-07',
+      name: 'Essential Shirt',
+      category: 'SHIRTS',
+      price: '$180',
+      priceNum: 180,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Minimal everyday shirt designed with a clean cut and understated Nigrum Stare attitude.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-08',
+      name: 'Structured Overshirt',
+      category: 'SHIRTS',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Structured overshirt with a relaxed fit, designed to layer effortlessly over the collection.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-09',
+      name: 'Premium Long Sleeve Shirt',
+      category: 'SHIRTS',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Refined long sleeve shirt with a clean contemporary cut.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // KAFTANS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-10',
+      name: 'Nigrum Kaftan',
+      category: 'KAFTANS',
+      price: '$210',
+      priceNum: 210,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Relaxed premium kaftan with an elegant flowing silhouette and understated luxury finish.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-11',
+      name: 'Structured Kaftan',
+      category: 'KAFTANS',
+      price: '$225',
+      priceNum: 225,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Modern structured kaftan combining traditional ease with contemporary streetwear proportions.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-12',
+      name: 'Signature Kaftan Set',
+      category: 'KAFTANS',
+      price: '$250',
+      priceNum: 250,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Complete kaftan set designed for a refined statement from day to evening.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // ITALIAN PANTS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-13',
+      name: 'Italian Pants',
+      category: 'ITALIAN PANTS',
+      price: '$190',
+      priceNum: 190,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Tailored Italian-inspired trousers with a relaxed luxury silhouette and clean drape.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-14',
+      name: 'Relaxed Italian Pants',
+      category: 'ITALIAN PANTS',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Relaxed wide-leg trousers balancing tailored construction with contemporary streetwear ease.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-15',
+      name: 'Pleated Italian Trousers',
+      category: 'ITALIAN PANTS',
+      price: '$210',
+      priceNum: 210,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Elegant pleated trousers with a structured waist and sophisticated fall.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // TROUSERS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-16',
+      name: 'Tailored Trousers',
+      category: 'TROUSERS',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Clean tailored trousers built around a sharp masculine silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-17',
+      name: 'Wide Leg Trousers',
+      category: 'TROUSERS',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Wide-leg trousers with a fluid shape and modern editorial profile.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-18',
+      name: 'Straight Cut Trousers',
+      category: 'TROUSERS',
+      price: '$175',
+      priceNum: 175,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Straight-cut trousers with minimal detailing and a timeless silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // CARGO
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-19',
+      name: 'Utility Cargo Pants',
+      category: 'CARGO',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Utility-inspired cargo trousers with functional pocket detailing and a refined finish.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-20',
+      name: 'Relaxed Cargo Pants',
+      category: 'CARGO',
+      price: '$190',
+      priceNum: 190,
+      image: 'assets/products/italian-pants.jpg',
+      desc: 'Relaxed cargo silhouette designed for everyday movement and streetwear layering.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // SHORTS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-21',
+      name: 'Relaxed Shorts',
+      category: 'SHORTS',
+      price: '$120',
+      priceNum: 120,
+      image: 'assets/products/t3.jpg',
+      desc: 'Relaxed heavyweight shorts with a clean, minimal streetwear silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-22',
+      name: 'Signature Shorts',
+      category: 'SHORTS',
+      price: '$125',
+      priceNum: 125,
+      image: 'assets/products/t3.jpg',
+      desc: 'Premium everyday shorts designed to pair with the Nigrum Stare essentials.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // SETS
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-23',
+      name: 'Sweatshirt & Shorts Set',
+      category: 'SETS',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/t3.jpg',
+      desc: 'Matching heavyweight sweatshirt and relaxed shorts set.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-24',
+      name: 'T-Shirt & Italian Pants Set',
+      category: 'SETS',
+      price: '$285',
+      priceNum: 285,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Complete Nigrum Stare look pairing a signature tee with refined Italian trousers.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-25',
+      name: 'Shirt & Italian Pants Set',
+      category: 'SETS',
+      price: '$310',
+      priceNum: 310,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Premium coordinated shirt and trouser set with a clean luxury silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-26',
+      name: 'Kaftan Set',
+      category: 'SETS',
+      price: '$250',
+      priceNum: 250,
+      image: 'assets/products/t 2.jpg',
+      desc: 'Complete relaxed kaftan set designed for effortless statement dressing.',
+      sizes: STANDARD_SIZES
+    },
+
+    // ----------------------------------------------------------
+    // ACCESSORIES
+    // ----------------------------------------------------------
+
+    {
+      id: 'ns-27',
+      name: 'Structured Tactical Cap',
+      category: 'ACCESSORIES',
+      price: '$75',
+      priceNum: 75,
+      image: 'assets/products/cap.jpg',
+      desc: 'Structured six-panel cap with a clean tactical profile and understated branding.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-28',
+      name: 'Wool Fisherman Beanie',
+      category: 'ACCESSORIES',
+      price: '$65',
+      priceNum: 65,
+      image: 'assets/products/ROYBENS 2 Pack Wool Fisherman Beanies for Men, Knit Short Watch Cap Winter Warm Hats.jpg',
+      desc: 'Dense knitted fisherman beanie with a clean minimalist silhouette.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-29',
+      name: 'Solid Trucker Hat',
+      category: 'ACCESSORIES',
+      price: '$70',
+      priceNum: 70,
+      image: 'assets/products/Men Solid Trucker Hat.jpg',
+      desc: 'Structured trucker hat with a clean masculine profile.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-30',
+      name: 'Tactical Bandana',
+      category: 'ACCESSORIES',
+      price: '$45',
+      priceNum: 45,
+      image: 'assets/products/1pc Quick Dry Sports Bandana.jpg',
+      desc: 'Technical bandana designed for versatile everyday styling.',
+      sizes: STANDARD_SIZES
+    },
+
+    {
+      id: 'ns-31',
+      name: 'Turban Headwrap',
+      category: 'ACCESSORIES',
+      price: '$50',
+      priceNum: 50,
+      image: 'assets/products/Turban.jpg',
+      desc: 'Clean structured headwrap designed as a bold finishing piece.',
+      sizes: STANDARD_SIZES
     }
 
+  ];
 
-    if (heroCanvas) {
+  // ============================================================
+  // STATE
+  // ============================================================
 
-      heroCtx =
-        heroCanvas.getContext(
-          '2d'
-        );
+  const frameImages = new Array(TOTAL_FRAMES);
+  let framesLoaded = 0;
 
-    }
+  let canvas;
+  let ctx;
 
+  let currentFrame = 0;
 
-    /* -------------------------------------------------------
-       HERO TEXT
-       ------------------------------------------------------- */
+  let cart = [];
 
-    heroTitleBlock =
+  let animationStarted = false;
+  let animationStartTime = 0;
 
-      document.querySelector(
-        '.hero-title'
-      ) ||
+  // ============================================================
+  // DOM
+  // ============================================================
 
-      document.querySelector(
-        '.hero-copy'
-      ) ||
+  const heroCanvas = document.getElementById('heroCanvas');
+  const heroContainer = document.getElementById('hero');
 
-      document.querySelector(
-        '.hero-content'
-      );
+  const heroTitleBlock = document.getElementById('heroTitleBlock');
+  const heroScrollHint = document.getElementById('heroScrollHint');
+  const stageIndicator = document.getElementById('stageIndicator');
 
+  const productGrid = document.getElementById('productGrid');
 
-    heroScrollHint =
+  const productModal = document.getElementById('productModal');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalImage = document.getElementById('modalImage');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalSizes = document.getElementById('modalSizes');
+  const modalAddBtn = document.getElementById('modalAddBtn');
 
-      document.querySelector(
-        '.hero-scroll-hint'
-      ) ||
+  const cartBtn = document.getElementById('cartBtn');
+  const cartBackdrop = document.getElementById('cartBackdrop');
+  const cartCloseBtn = document.getElementById('cartCloseBtn');
+  const cartItemsContainer = document.getElementById('cartItemsContainer');
+  const cartSubtotal = document.getElementById('cartSubtotal');
+  const cartCheckoutBtn = document.getElementById('cartCheckoutBtn');
 
-      document.querySelector(
-        '.scroll-hint'
-      );
+  const statementSection = document.getElementById('statementSection');
+  const minimalToast = document.getElementById('minimalToast');
 
+  let activeProduct = null;
+  let selectedSize = null;
 
-    stageIndicator =
+  // ============================================================
+  // INITIALIZATION
+  // ============================================================
 
-      document.querySelector(
-        '.stage-indicator'
-      ) ||
+  function init() {
 
-      document.querySelector(
-        '[data-stage]'
-      );
+    canvas = heroCanvas;
 
+    if (!canvas) return;
 
-    /* -------------------------------------------------------
-       HERO HEIGHT
-       ------------------------------------------------------- */
+    ctx = canvas.getContext('2d');
 
+    // Keep hero at one viewport.
     if (heroContainer) {
-
-      heroContainer.style.height =
-        '100vh';
-
-      heroContainer.style.minHeight =
-        '100vh';
-
+      heroContainer.style.height = '100vh';
+      heroContainer.style.minHeight = '100vh';
     }
 
+    loadCart();
 
-    /* -------------------------------------------------------
-       INITIAL SETUP
-       ------------------------------------------------------- */
+    resizeCanvas();
 
-    setupCanvas();
-
-    setupScrollListener();
+    window.addEventListener('resize', resizeCanvas);
 
     preloadFrames();
 
-    setupNavigation();
+    setupScrollListener();
 
-    setupCollection();
+    renderProducts();
 
     setupProductModal();
 
-    setupCart();
+    setupCartDrawer();
 
-    setupIntersectionObserver();
+    setupIntersectionObservers();
 
-    updateCartUI();
+    setupSmoothScrollLinks();
 
+    requestAnimationFrame(renderLoop);
+  }
 
-    /*
-       Keep hero writing visible
-       immediately.
-    */
+  // ============================================================
+  // CANVAS
+  // ============================================================
+
+  function resizeCanvas() {
+
+    if (!canvas) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    const rect = canvas.getBoundingClientRect();
+
+    canvas.width = (rect.width || window.innerWidth) * dpr;
+    canvas.height = (rect.height || window.innerHeight) * dpr;
+
+    if (ctx) {
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+    }
+
+    // Redraw current frame after resizing.
+    const frame = frameImages[Math.floor(currentFrame)];
+
+    if (frame) {
+      drawFrame(frame);
+    }
+  }
+
+  // ============================================================
+  // LOAD ALL 83 FRAMES
+  // ============================================================
+
+  function preloadFrames() {
+
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+
+      const img = new Image();
+
+      const padded = String(i).padStart(3, '0');
+
+      img.src = `${FRAME_PREFIX}${padded}${FRAME_EXT}`;
+
+      img.onload = () => {
+
+        frameImages[i - 1] = img;
+
+        framesLoaded++;
+
+        if (i === 1 && currentFrame === 0) {
+          drawFrame(img);
+        }
+
+        // Start only after all frames are available.
+        if (
+          framesLoaded === TOTAL_FRAMES &&
+          !animationStarted
+        ) {
+          startAutoPlay();
+        }
+      };
+
+      img.onerror = () => {
+
+        // Count failed frame so one missing image
+        // does not permanently prevent playback.
+        framesLoaded++;
+
+        if (
+          framesLoaded === TOTAL_FRAMES &&
+          !animationStarted
+        ) {
+          startAutoPlay();
+        }
+      };
+    }
+  }
+
+  // ============================================================
+  // CONTINUOUS 15 SECOND LOOP
+  // ============================================================
+
+  function startAutoPlay() {
+
+    if (animationStarted) return;
+
+    animationStarted = true;
+
+    animationStartTime = performance.now();
 
     keepHeroTextVisible();
 
+    requestAnimationFrame(animate);
   }
-);
-
-
-/* =========================================================
-   CANVAS SETUP
-   ========================================================= */
-
-function setupCanvas() {
-
-  if (
-    !heroCanvas ||
-    !heroCtx
-  ) {
-
-    return;
-
-  }
-
-
-  const resizeCanvas = () => {
-
-    const rect =
-      heroCanvas.getBoundingClientRect();
-
-
-    const dpr =
-      window.devicePixelRatio || 1;
-
-
-    heroCanvas.width =
-      Math.floor(
-        rect.width * dpr
-      );
-
-
-    heroCanvas.height =
-      Math.floor(
-        rect.height * dpr
-      );
-
-
-    heroCtx.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
-
-
-    /*
-       Redraw current frame
-       after resizing.
-    */
-
-    const frameIndex =
-      Math.min(
-        TOTAL_FRAMES - 1,
-        Math.max(
-          0,
-          Math.floor(
-            currentFrame
-          )
-        )
-      );
-
-
-    const currentImage =
-      frameImages[frameIndex];
-
-
-    if (currentImage) {
-
-      drawFrame(
-        currentImage
-      );
-
-    }
-
-  };
-
-
-  window.addEventListener(
-    'resize',
-    resizeCanvas
-  );
-
-
-  resizeCanvas();
-
-}
-
-
-/* =========================================================
-   FRAME PATH
-   ========================================================= */
-
-function getFramePath(index) {
-
-  const frameNumber =
-    String(
-      index + 1
-    ).padStart(
-      3,
-      '0'
-    );
-
-
-  return (
-    FRAME_PREFIX +
-    frameNumber +
-    FRAME_EXT
-  );
-
-}
-
-
-/* =========================================================
-   PRELOAD ALL FRAMES
-   ========================================================= */
-
-function preloadFrames() {
-
-  let loaded = 0;
-
-  let failed = 0;
-
-
-  /*
-     Do NOT start the animation
-     after only frame 001.
-
-     We wait until the complete
-     animation is available.
-  */
-
-  for (
-    let i = 0;
-    i < TOTAL_FRAMES;
-    i++
-  ) {
-
-    const img =
-      new Image();
-
-
-    img.decoding =
-      'async';
-
-
-    img.src =
-      getFramePath(i);
-
-
-    img.onload = () => {
-
-      loaded++;
-
-      frameImages[i] =
-        img;
-
-
-      /*
-         Show frame 001 immediately
-         when it becomes available.
-      */
-
-      if (i === 0) {
-
-        currentFrame = 0;
-
-        targetFrame = 0;
-
-        drawFrame(img);
-
-      }
-
-
-      /*
-         START ONLY WHEN ALL FRAMES
-         HAVE LOADED.
-      */
-
-      if (
-        loaded === TOTAL_FRAMES
-      ) {
-
-        startAutoPlay();
-
-      }
-
-    };
-
-
-    img.onerror = () => {
-
-      failed++;
-
-
-      console.warn(
-        'Could not load frame:',
-        getFramePath(i)
-      );
-
-
-      /*
-         If one or more frames fail,
-         don't leave the animation
-         permanently frozen.
-
-         Start once everything that
-         can load has finished.
-      */
-
-      if (
-        loaded + failed ===
-        TOTAL_FRAMES
-      ) {
-
-        startAutoPlay();
-
-      }
-
-    };
-
-  }
-
-}
-
-
-/* =========================================================
-   DRAW FRAME
-   ========================================================= */
-
-function drawFrame(img) {
-
-  if (
-    !img ||
-    !heroCanvas ||
-    !heroCtx
-  ) {
-
-    return;
-
-  }
-
-
-  const canvasWidth =
-    heroCanvas.clientWidth;
-
-
-  const canvasHeight =
-    heroCanvas.clientHeight;
-
-
-  if (
-    !canvasWidth ||
-    !canvasHeight
-  ) {
-
-    return;
-
-  }
-
-
-  /*
-     Clear previous frame.
-  */
-
-  heroCtx.clearRect(
-    0,
-    0,
-    canvasWidth,
-    canvasHeight
-  );
-
-
-  /*
-     Keep original image
-     aspect ratio.
-  */
-
-  const imageRatio =
-    img.naturalWidth /
-    img.naturalHeight;
-
-
-  const canvasRatio =
-    canvasWidth /
-    canvasHeight;
-
-
-  let drawWidth;
-
-  let drawHeight;
-
-
-  if (
-    imageRatio > canvasRatio
-  ) {
-
-    drawHeight =
-      canvasHeight;
-
-
-    drawWidth =
-      drawHeight *
-      imageRatio;
-
-  } else {
-
-    drawWidth =
-      canvasWidth;
-
-
-    drawHeight =
-      drawWidth /
-      imageRatio;
-
-  }
-
-
-  const x =
-    (
-      canvasWidth -
-      drawWidth
-    ) / 2;
-
-
-  const y =
-    (
-      canvasHeight -
-      drawHeight
-    ) / 2;
-
-
-  heroCtx.drawImage(
-    img,
-    x,
-    y,
-    drawWidth,
-    drawHeight
-  );
-
-}
-
-
-/* =========================================================
-   AUTOMATIC ANIMATION
-   ========================================================= */
-
-function startAutoPlay() {
-
-  /*
-     Prevent duplicate animation
-     loops.
-  */
-
-  if (autoPlayStarted) {
-
-    return;
-
-  }
-
-
-  if (
-    frameImages.length === 0
-  ) {
-
-    return;
-
-  }
-
-
-  autoPlayStarted =
-    true;
-
-
-  autoPlaying =
-    true;
-
-
-  animationStartTime =
-    performance.now();
-
-
-  /*
-     Make absolutely sure
-     the writing is visible.
-  */
-
-  keepHeroTextVisible();
-
 
   function animate(now) {
 
-    if (!autoPlaying) {
-
-      return;
-
-    }
-
-
-    /*
-       Calculate the exact position
-       inside the 15-second loop.
-
-       % creates the continuous loop.
-    */
-
     const elapsed =
-      (
-        now -
-        animationStartTime
-      ) %
-      AUTO_PLAY_DURATION;
-
+      (now - animationStartTime) % AUTO_PLAY_DURATION;
 
     const progress =
-      elapsed /
-      AUTO_PLAY_DURATION;
+      elapsed / AUTO_PLAY_DURATION;
 
+    const targetFrame =
+      progress * (TOTAL_FRAMES - 1);
 
-    /*
-       Convert progress into
-       frame number.
-
-       0.00 = frame 001
-       0.50 = middle
-       0.99 = frame 083
-       1.00 = back to frame 001
-    */
-
-    targetFrame =
-      progress *
-      (TOTAL_FRAMES - 1);
-
-
-    /*
-       IMPORTANT:
-
-       We DO NOT use LERP here.
-
-       The old LERP system was causing:
-
-       083 → 082 → 081 → ...
-       instead of:
-
-       083 → 001
-
-       This direct frame selection
-       makes the loop behave like
-       a real video.
-    */
-
-    currentFrame =
-      targetFrame;
-
+    // IMPORTANT:
+    // Direct frame positioning is used here.
+    // This prevents the 083 -> 001 transition
+    // from travelling backwards.
+    currentFrame = targetFrame;
 
     const frameIndex =
-      Math.floor(
-        currentFrame
-      );
-
+      Math.floor(currentFrame);
 
     const frame =
       frameImages[frameIndex];
 
-
     if (frame) {
-
       drawFrame(frame);
-
     }
-
-
-    /*
-       Keep writing visible
-       on every animation frame.
-    */
 
     keepHeroTextVisible();
 
+    updateStageIndicator(progress);
 
-    /*
-       Update stage indicator.
-    */
-
-    updateStageIndicator(
-      progress
-    );
-
-
-    requestAnimationFrame(
-      animate
-    );
-
+    requestAnimationFrame(animate);
   }
 
+  // ============================================================
+  // HERO TEXT ALWAYS VISIBLE
+  // ============================================================
 
-  requestAnimationFrame(
-    animate
-  );
+  function keepHeroTextVisible() {
 
-}
+    if (heroTitleBlock) {
 
+      heroTitleBlock.style.opacity = '1';
 
-/* =========================================================
-   HERO TEXT — PERMANENTLY VISIBLE
-   ========================================================= */
+      heroTitleBlock.style.visibility = 'visible';
 
-function keepHeroTextVisible() {
+      heroTitleBlock.style.display = 'block';
 
-  /*
-     MAIN HERO WRITING
-  */
-
-  if (heroTitleBlock) {
-
-    heroTitleBlock.style.opacity =
-      '1';
-
-
-    heroTitleBlock.style.visibility =
-      'visible';
-
-
-    heroTitleBlock.style.display =
-      'block';
-
-
-    /*
-       Do not allow the old
-       scroll animation to move it.
-    */
-
-    heroTitleBlock.style.transform =
-      'translate(-50%, -50%)';
-
-
-    heroTitleBlock.style.pointerEvents =
-      'auto';
-
-  }
-
-
-  /*
-     SCROLL TO EXPLORE
-  */
-
-  if (heroScrollHint) {
-
-    heroScrollHint.style.opacity =
-      '1';
-
-
-    heroScrollHint.style.visibility =
-      'visible';
-
-
-    heroScrollHint.style.display =
-      'block';
-
-  }
-
-}
-
-
-/* =========================================================
-   STAGE INDICATOR
-   ========================================================= */
-
-function updateStageIndicator(
-  progress
-) {
-
-  if (!stageIndicator) {
-
-    return;
-
-  }
-
-
-  stageIndicator.classList.add(
-    'visible'
-  );
-
-
-  const frameIdx =
-    Math.floor(
-      progress *
-      (TOTAL_FRAMES - 1)
-    );
-
-
-  let matchedStage =
-    STAGES[0].name;
-
-
-  for (
-    let s = 0;
-    s < STAGES.length;
-    s++
-  ) {
-
-    if (
-      frameIdx >=
-      STAGES[s].range[0] &&
-
-      frameIdx <=
-      STAGES[s].range[1]
-    ) {
-
-      matchedStage =
-        STAGES[s].name;
-
-      break;
-
+      heroTitleBlock.style.transform =
+        'translate(-50%, -50%)';
     }
 
+    if (heroScrollHint) {
+
+      heroScrollHint.style.opacity = '1';
+
+      heroScrollHint.style.visibility = 'visible';
+    }
   }
 
+  // ============================================================
+  // STAGE INDICATOR
+  // ============================================================
 
-  if (
-    stageIndicator.textContent !==
-    matchedStage
-  ) {
+  function updateStageIndicator(progress) {
 
-    stageIndicator.textContent =
-      matchedStage;
+    if (!stageIndicator) return;
 
-  }
+    const frameIndex =
+      Math.round(progress * (TOTAL_FRAMES - 1));
 
-}
+    let matchedStage = STAGES[0].name;
 
+    for (let i = 0; i < STAGES.length; i++) {
 
-/* =========================================================
-   OLD RENDER LOOP REMOVED
-   ========================================================= */
+      if (
+        frameIndex >= STAGES[i].range[0] &&
+        frameIndex <= STAGES[i].range[1]
+      ) {
 
-/*
-   IMPORTANT:
+        matchedStage = STAGES[i].name;
 
-   There is intentionally NO separate
-   render() loop anymore.
-
-   The animation itself draws the
-   correct frame directly.
-
-   This prevents the 083 → 001
-   transition from reversing.
-*/
-
-
-/* =========================================================
-   SCROLL
-   ========================================================= */
-
-/*
-   SCROLL DOES NOT CONTROL
-   THE ANIMATION.
-
-   The animation continues playing
-   regardless of scrolling.
-
-   Scrolling only moves the visitor
-   through the website.
-*/
-
-function setupScrollListener() {
-
-  window.addEventListener(
-    'scroll',
-
-    () => {
-
-      /*
-         Make sure the hero writing
-         never disappears.
-      */
-
-      keepHeroTextVisible();
-
-    },
-
-    {
-      passive: true
+        break;
+      }
     }
 
-  );
-
-}
-
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function setupNavigation() {
-
-  const navLinks =
-    document.querySelectorAll(
-      'a[href^="#"]'
-    );
-
-
-  navLinks.forEach(
-    link => {
-
-      link.addEventListener(
-        'click',
-
-        event => {
-
-          const href =
-            link.getAttribute(
-              'href'
-            );
-
-
-          if (
-            !href ||
-            href === '#'
-          ) {
-
-            return;
-
-          }
-
-
-          const target =
-            document.querySelector(
-              href
-            );
-
-
-          if (!target) {
-
-            return;
-
-          }
-
-
-          event.preventDefault();
-
-
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-
-        }
-
-      );
-
-    }
-
-  );
-
-}
-
-
-/* =========================================================
-   COLLECTION
-   ========================================================= */
-
-function setupCollection() {
-
-  const collection =
-    document.querySelector(
-      '#collection'
-    );
-
-
-  if (!collection) {
-
-    return;
-
+    stageIndicator.textContent = matchedStage;
   }
 
+  // ============================================================
+  // SCROLL
+  // Animation DOES NOT stop when scrolling.
+  // ============================================================
 
-  const productGrid =
-    collection.querySelector(
-      '.product-grid'
-    );
+  function setupScrollListener() {
 
-
-  if (!productGrid) {
-
-    return;
-
-  }
-
-
-  /*
-     Clear existing products
-     before rebuilding.
-  */
-
-  productGrid.innerHTML =
-    '';
-
-
-  PRODUCTS.forEach(
-    product => {
-
-      const card =
-        createProductCard(
-          product
-        );
-
-
-      productGrid.appendChild(
-        card
-      );
-
-    }
-
-  );
-
-}
-
-
-/* =========================================================
-   PRODUCT CARD
-   ========================================================= */
-
-function createProductCard(
-  product
-) {
-
-  const card =
-    document.createElement(
-      'article'
-    );
-
-
-  card.className =
-    'product-card';
-
-
-  card.dataset.productId =
-    product.id;
-
-
-  card.innerHTML = `
-
-    <button
-      class="product-image-button"
-      type="button"
-      aria-label="View ${product.name}"
-    >
-
-      <div class="product-image-wrap">
-
-        <img
-          src="${product.image}"
-          alt="${product.name}"
-          loading="lazy"
-        >
-
-        <span class="product-view">
-          VIEW
-        </span>
-
-      </div>
-
-    </button>
-
-
-    <div class="product-info">
-
-      <h3>
-        ${product.name}
-      </h3>
-
-      <p>
-        $${product.price}
-      </p>
-
-    </div>
-
-  `;
-
-
-  const button =
-    card.querySelector(
-      '.product-image-button'
-    );
-
-
-  if (button) {
-
-    button.addEventListener(
-      'click',
-
+    window.addEventListener(
+      'scroll',
       () => {
-
-        openProductModal(
-          product.id
-        );
-
-      }
-
+        keepHeroTextVisible();
+      },
+      { passive: true }
     );
-
   }
 
+  // ============================================================
+  // FRAME RENDER
+  // ============================================================
 
-  return card;
+  function renderLoop() {
 
-}
+    // Keep rendering current frame.
+    const frameIndex =
+      Math.floor(currentFrame);
 
+    const frame =
+      frameImages[frameIndex];
 
-/* =========================================================
-   PRODUCT MODAL
-   ========================================================= */
+    if (frame) {
+      drawFrame(frame);
+    }
 
-let productModal =
-  null;
-
-
-function setupProductModal() {
-
-  productModal =
-    document.querySelector(
-      '#product-modal'
-    );
-
-
-  if (!productModal) {
-
-    return;
-
+    requestAnimationFrame(renderLoop);
   }
 
+  function drawFrame(img) {
 
-  const closeButtons =
-    productModal.querySelectorAll(
-      '[data-close-modal]'
+    if (!ctx || !canvas || !img) return;
+
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
     );
 
+    const srcW =
+      img.naturalWidth ||
+      img.width ||
+      1280;
 
-  closeButtons.forEach(
-    button => {
+    const srcH =
+      img.naturalHeight ||
+      img.height ||
+      720;
 
-      button.addEventListener(
-        'click',
-        closeProductModal
+    const canvasW = canvas.width;
+    const canvasH = canvas.height;
+
+    const scale =
+      Math.max(
+        canvasW / srcW,
+        canvasH / srcH
       );
 
-    }
+    const drawW =
+      srcW * scale;
 
-  );
+    const drawH =
+      srcH * scale;
 
+    const drawX =
+      (canvasW - drawW) / 2;
 
-  productModal.addEventListener(
-    'click',
+    const drawY =
+      (canvasH - drawH) / 2;
 
-    event => {
-
-      if (
-        event.target ===
-        productModal
-      ) {
-
-        closeProductModal();
-
-      }
-
-    }
-
-  );
-
-
-  document.addEventListener(
-    'keydown',
-
-    event => {
-
-      if (
-        event.key ===
-        'Escape'
-      ) {
-
-        closeProductModal();
-
-      }
-
-    }
-
-  );
-
-}
-
-
-/* =========================================================
-   OPEN PRODUCT MODAL
-   ========================================================= */
-
-function openProductModal(
-  productId
-) {
-
-  const product =
-    PRODUCTS.find(
-      item =>
-        item.id ===
-        productId
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      srcW,
+      srcH,
+      drawX,
+      drawY,
+      drawW,
+      drawH
     );
-
-
-  if (
-    !product ||
-    !productModal
-  ) {
-
-    return;
-
   }
 
+  // ============================================================
+  // PRODUCTS
+  // ============================================================
 
-  const image =
-    productModal.querySelector(
-      '[data-product-image]'
-    );
+  function renderProducts() {
 
+    if (!productGrid) return;
 
-  const name =
-    productModal.querySelector(
-      '[data-product-name]'
-    );
+    productGrid.innerHTML = '';
 
+    PRODUCTS.forEach(product => {
 
-  const price =
-    productModal.querySelector(
-      '[data-product-price]'
-    );
+      const item =
+        document.createElement('div');
 
+      item.className = 'product-item';
 
-  const description =
-    productModal.querySelector(
-      '[data-product-description]'
-    );
+      item.dataset.id = product.id;
 
+      item.innerHTML = `
 
-  const sizeContainer =
-    productModal.querySelector(
-      '[data-product-sizes]'
-    );
+        <div class="product-image-wrap">
 
+          <img
+            src="${product.image}"
+            alt="${product.name}"
+            loading="lazy"
+            onerror="this.src='assets/products/t 2.jpg'"
+          />
 
-  if (image) {
+          <div class="product-hover-view">
+            <span class="view-label">VIEW</span>
+          </div>
 
-    image.src =
-      product.image;
+        </div>
 
-    image.alt =
-      product.name;
+        <div class="product-meta">
 
-  }
+          <span class="product-name">
+            ${product.name}
+          </span>
 
+          <span class="product-price">
+            ${product.price}
+          </span>
 
-  if (name) {
-
-    name.textContent =
-      product.name;
-
-  }
-
-
-  if (price) {
-
-    price.textContent =
-      `$${product.price}`;
-
-  }
-
-
-  if (description) {
-
-    description.textContent =
-      'A considered Nigrum Stare piece shaped by precision, individuality and edge.';
-
-  }
-
-
-  if (sizeContainer) {
-
-    sizeContainer.innerHTML =
-      '';
-
-
-    product.sizes.forEach(
-      size => {
-
-        const button =
-          document.createElement(
-            'button'
-          );
-
-
-        button.type =
-          'button';
-
-
-        button.className =
-          'size-option';
-
-
-        button.textContent =
-          size;
-
-
-        button.dataset.size =
-          size;
-
-
-        button.addEventListener(
-          'click',
-
-          () => {
-
-            sizeContainer
-              .querySelectorAll(
-                '.size-option'
-              )
-              .forEach(
-                item =>
-                  item.classList.remove(
-                    'selected'
-                  )
-              );
-
-
-            button.classList.add(
-              'selected'
-            );
-
-          }
-
-        );
-
-
-        sizeContainer.appendChild(
-          button
-        );
-
-      }
-
-    );
-
-  }
-
-
-  const addButton =
-    productModal.querySelector(
-      '[data-add-to-cart]'
-    );
-
-
-  if (addButton) {
-
-    addButton.onclick = () => {
-
-      const selectedSize =
-        sizeContainer
-          ? sizeContainer.querySelector(
-              '.size-option.selected'
-            )
-          : null;
-
-
-      const size =
-        selectedSize
-          ? selectedSize.dataset.size
-          : product.sizes[0];
-
-
-      addToCart(
-        product,
-        size
-      );
-
-
-      closeProductModal();
-
-    };
-
-  }
-
-
-  productModal.classList.add(
-    'open'
-  );
-
-
-  document.body.classList.add(
-    'modal-open'
-  );
-
-}
-
-
-/* =========================================================
-   CLOSE PRODUCT MODAL
-   ========================================================= */
-
-function closeProductModal() {
-
-  if (!productModal) {
-
-    return;
-
-  }
-
-
-  productModal.classList.remove(
-    'open'
-  );
-
-
-  document.body.classList.remove(
-    'modal-open'
-  );
-
-}
-
-
-/* =========================================================
-   CART
-   ========================================================= */
-
-function setupCart() {
-
-  const cartButton =
-    document.querySelector(
-      '[data-cart]'
-    );
-
-
-  const cartClose =
-    document.querySelector(
-      '[data-close-cart]'
-    );
-
-
-  if (cartButton) {
-
-    cartButton.addEventListener(
-      'click',
-      openCart
-    );
-
-  }
-
-
-  if (cartClose) {
-
-    cartClose.addEventListener(
-      'click',
-      closeCart
-    );
-
-  }
-
-
-  const checkoutButton =
-    document.querySelector(
-      '[data-checkout]'
-    );
-
-
-  if (checkoutButton) {
-
-    checkoutButton.addEventListener(
-      'click',
-      checkout
-    );
-
-  }
-
-
-  const cartDrawer =
-    document.querySelector(
-      '#cart-drawer'
-    );
-
-
-  if (cartDrawer) {
-
-    cartDrawer.addEventListener(
-      'click',
-
-      event => {
-
-        if (
-          event.target ===
-          cartDrawer
-        ) {
-
-          closeCart();
-
-        }
-
-      }
-
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   ADD TO CART
-   ========================================================= */
-
-function addToCart(
-  product,
-  size
-) {
-
-  const existing =
-    cart.find(
-      item =>
-        item.id ===
-        product.id &&
-
-        item.size ===
-        size
-    );
-
-
-  if (existing) {
-
-    existing.quantity +=
-      1;
-
-  } else {
-
-    cart.push({
-
-      id:
-        product.id,
-
-      name:
-        product.name,
-
-      price:
-        product.price,
-
-      image:
-        product.image,
-
-      size:
-        size,
-
-      quantity:
-        1
-
-    });
-
-  }
-
-
-  saveCart();
-
-  updateCartUI();
-
-
-  showToast(
-    `${product.name} added to cart`
-  );
-
-}
-
-
-/* =========================================================
-   SAVE CART
-   ========================================================= */
-
-function saveCart() {
-
-  try {
-
-    localStorage.setItem(
-      CART_STORAGE_KEY,
-      JSON.stringify(cart)
-    );
-
-  } catch (error) {
-
-    console.warn(
-      'Could not save cart:',
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   CART UI
-   ========================================================= */
-
-function updateCartUI() {
-
-  const cartItems =
-    document.querySelector(
-      '[data-cart-items]'
-    );
-
-
-  const cartCount =
-    document.querySelectorAll(
-      '[data-cart-count]'
-    );
-
-
-  const cartTotal =
-    document.querySelector(
-      '[data-cart-total]'
-    );
-
-
-  const totalQuantity =
-    cart.reduce(
-      (total, item) =>
-        total +
-        item.quantity,
-      0
-    );
-
-
-  cartCount.forEach(
-    element => {
-
-      element.textContent =
-        totalQuantity;
-
-    }
-
-  );
-
-
-  if (cartItems) {
-
-    cartItems.innerHTML =
-      '';
-
-
-    if (cart.length === 0) {
-
-      cartItems.innerHTML = `
-
-        <p class="cart-empty">
-          YOUR CART IS EMPTY.
-        </p>
+        </div>
 
       `;
 
-    } else {
-
-      cart.forEach(
-        item => {
-
-          const cartItem =
-            document.createElement(
-              'div'
-            );
-
-
-          cartItem.className =
-            'cart-item';
-
-
-          cartItem.innerHTML = `
-
-            <img
-              src="${item.image}"
-              alt="${item.name}"
-            >
-
-            <div class="cart-item-info">
-
-              <h4>
-                ${item.name}
-              </h4>
-
-              <p>
-                Size: ${item.size}
-              </p>
-
-              <p>
-                $${item.price}
-              </p>
-
-              <div class="cart-item-actions">
-
-                <button
-                  type="button"
-                  data-cart-minus="${item.id}"
-                  data-cart-size="${item.size}"
-                >
-                  −
-                </button>
-
-                <span>
-                  ${item.quantity}
-                </span>
-
-                <button
-                  type="button"
-                  data-cart-plus="${item.id}"
-                  data-cart-size="${item.size}"
-                >
-                  +
-                </button>
-
-                <button
-                  type="button"
-                  data-cart-remove="${item.id}"
-                  data-cart-size="${item.size}"
-                >
-                  REMOVE
-                </button>
-
-              </div>
-
-            </div>
-
-          `;
-
-
-          cartItems.appendChild(
-            cartItem
-          );
-
-        }
-
+      item.addEventListener(
+        'click',
+        () => openProductModal(product)
       );
 
-
-      setupCartItemButtons();
-
-    }
-
+      productGrid.appendChild(item);
+    });
   }
 
+  // ============================================================
+  // PRODUCT MODAL
+  // ============================================================
 
-  if (cartTotal) {
+  function setupProductModal() {
 
-    const total =
+    if (modalCloseBtn) {
+
+      modalCloseBtn.addEventListener(
+        'click',
+        closeProductModal
+      );
+    }
+
+    if (productModal) {
+
+      productModal.addEventListener(
+        'click',
+        e => {
+
+          if (e.target === productModal) {
+            closeProductModal();
+          }
+
+        }
+      );
+    }
+
+    if (modalAddBtn) {
+
+      modalAddBtn.addEventListener(
+        'click',
+        () => {
+
+          if (!activeProduct) return;
+
+          if (!selectedSize) {
+
+            showToast('SELECT SIZE');
+
+            return;
+          }
+
+          addToCart(
+            activeProduct,
+            selectedSize
+          );
+
+          closeProductModal();
+        }
+      );
+    }
+  }
+
+  function openProductModal(product) {
+
+    activeProduct = product;
+
+    selectedSize = product.sizes[0];
+
+    if (modalImage) {
+
+      modalImage.src = product.image;
+
+      modalImage.alt = product.name;
+
+      modalImage.onerror = () => {
+        modalImage.src =
+          'assets/products/t 2.jpg';
+      };
+    }
+
+    if (modalTitle) {
+      modalTitle.textContent =
+        product.name;
+    }
+
+    if (modalDesc) {
+      modalDesc.textContent =
+        product.desc;
+    }
+
+    if (modalPrice) {
+      modalPrice.textContent =
+        product.price;
+    }
+
+    if (modalSizes) {
+
+      modalSizes.innerHTML = '';
+
+      product.sizes.forEach(
+        (size, index) => {
+
+          const button =
+            document.createElement('button');
+
+          button.className =
+            `size-btn ${
+              index === 0
+                ? 'active'
+                : ''
+            }`;
+
+          button.textContent = size;
+
+          button.addEventListener(
+            'click',
+            () => {
+
+              modalSizes
+                .querySelectorAll('.size-btn')
+                .forEach(btn => {
+                  btn.classList.remove('active');
+                });
+
+              button.classList.add('active');
+
+              selectedSize = size;
+            }
+          );
+
+          modalSizes.appendChild(button);
+        }
+      );
+    }
+
+    if (productModal) {
+      productModal.classList.add('open');
+      document.body.classList.add('modal-open');
+    }
+  }
+
+  function closeProductModal() {
+
+    if (productModal) {
+      productModal.classList.remove('open');
+    }
+
+    document.body.classList.remove('modal-open');
+  }
+
+  // ============================================================
+  // CART
+  // ============================================================
+
+  function setupCartDrawer() {
+
+    if (cartBtn) {
+
+      cartBtn.addEventListener(
+        'click',
+        openCart
+      );
+    }
+
+    if (cartCloseBtn) {
+
+      cartCloseBtn.addEventListener(
+        'click',
+        closeCart
+      );
+    }
+
+    if (cartBackdrop) {
+
+      cartBackdrop.addEventListener(
+        'click',
+        e => {
+
+          if (e.target === cartBackdrop) {
+            closeCart();
+          }
+
+        }
+      );
+    }
+
+    if (cartCheckoutBtn) {
+
+      cartCheckoutBtn.addEventListener(
+        'click',
+        () => {
+
+          if (cart.length === 0) {
+
+            showToast('BAG EMPTY');
+
+            return;
+          }
+
+          window.open(
+            'https://paystack.shop/pay/yw9q-sw7y7',
+            '_blank'
+          );
+        }
+      );
+    }
+  }
+
+  function openCart() {
+
+    renderCart();
+
+    if (cartBackdrop) {
+      cartBackdrop.classList.add('open');
+    }
+  }
+
+  function closeCart() {
+
+    if (cartBackdrop) {
+      cartBackdrop.classList.remove('open');
+    }
+  }
+
+  function addToCart(product, size) {
+
+    const existing =
+      cart.find(
+        item =>
+          item.id === product.id &&
+          item.size === size
+      );
+
+    if (existing) {
+
+      existing.qty++;
+
+    } else {
+
+      cart.push({
+
+        id: product.id,
+
+        name: product.name,
+
+        price: product.price,
+
+        priceNum: product.priceNum,
+
+        image: product.image,
+
+        size: size,
+
+        qty: 1
+
+      });
+    }
+
+    saveCart();
+
+    updateCartButton();
+
+    renderCart();
+
+    openCart();
+
+    showToast(
+      `ADDED ${product.name}`
+    );
+  }
+
+  function updateCartButton() {
+
+    const totalCount =
       cart.reduce(
-        (sum, item) =>
-          sum +
-          (
-            item.price *
-            item.quantity
-          ),
+        (total, item) =>
+          total + item.qty,
         0
       );
 
+    if (cartBtn) {
 
-    cartTotal.textContent =
-      `$${total.toFixed(2)}`;
-
+      cartBtn.textContent =
+        `CART (${totalCount})`;
+    }
   }
 
-}
+  function renderCart() {
 
+    if (!cartItemsContainer) return;
 
-/* =========================================================
-   CART ITEM BUTTONS
-   ========================================================= */
+    cartItemsContainer.innerHTML = '';
 
-function setupCartItemButtons() {
+    if (cart.length === 0) {
 
-  document
-    .querySelectorAll(
-      '[data-cart-plus]'
-    )
-    .forEach(
-      button => {
+      cartItemsContainer.innerHTML =
+        `<p class="cart-empty-text">
+          BAG IS EMPTY
+        </p>`;
 
-        button.addEventListener(
-          'click',
-
-          () => {
-
-            changeCartQuantity(
-              button.dataset.cartPlus,
-              button.dataset.cartSize,
-              1
-            );
-
-          }
-
-        );
-
+      if (cartSubtotal) {
+        cartSubtotal.textContent =
+          '$0';
       }
 
-    );
+      return;
+    }
 
+    let total = 0;
 
-  document
-    .querySelectorAll(
-      '[data-cart-minus]'
-    )
-    .forEach(
-      button => {
+    cart.forEach(
+      (item, index) => {
 
-        button.addEventListener(
-          'click',
+        total +=
+          item.priceNum *
+          item.qty;
 
-          () => {
+        const row =
+          document.createElement('div');
 
-            changeCartQuantity(
-              button.dataset.cartMinus,
-              button.dataset.cartSize,
-              -1
-            );
+        row.className =
+          'cart-item-row';
 
-          }
+        row.innerHTML = `
 
-        );
+          <img
+            src="${item.image}"
+            alt="${item.name}"
+            class="cart-item-img"
+            onerror="this.src='assets/products/t 2.jpg'"
+          />
 
-      }
+          <div class="cart-item-info">
 
-    );
+            <div class="cart-item-name">
+              ${item.name}
+            </div>
 
+            <div class="cart-item-size">
+              SIZE: ${item.size} × ${item.qty}
+            </div>
 
-  document
-    .querySelectorAll(
-      '[data-cart-remove]'
-    )
-    .forEach(
-      button => {
+            <div class="cart-item-price">
+              $${item.priceNum * item.qty}
+            </div>
 
-        button.addEventListener(
-          'click',
+          </div>
 
-          () => {
+          <button
+            class="cart-item-remove"
+            data-index="${index}"
+          >
+            REMOVE
+          </button>
+        `;
 
-            removeFromCart(
-              button.dataset.cartRemove,
-              button.dataset.cartSize
-            );
-
-          }
-
-        );
-
-      }
-
-    );
-
-}
-
-
-/* =========================================================
-   CHANGE CART QUANTITY
-   ========================================================= */
-
-function changeCartQuantity(
-  productId,
-  size,
-  change
-) {
-
-  const item =
-    cart.find(
-      cartItem =>
-        cartItem.id ===
-        productId &&
-
-        cartItem.size ===
-        size
-    );
-
-
-  if (!item) {
-
-    return;
-
-  }
-
-
-  item.quantity +=
-    change;
-
-
-  if (
-    item.quantity <= 0
-  ) {
-
-    cart =
-      cart.filter(
-        cartItem =>
-          !(
-            cartItem.id ===
-            productId &&
-
-            cartItem.size ===
-            size
+        row
+          .querySelector(
+            '.cart-item-remove'
           )
+          .addEventListener(
+            'click',
+            () => {
+
+              cart.splice(index, 1);
+
+              saveCart();
+
+              updateCartButton();
+
+              renderCart();
+            }
+          );
+
+        cartItemsContainer.appendChild(row);
+      }
+    );
+
+    if (cartSubtotal) {
+
+      cartSubtotal.textContent =
+        `$${total}`;
+    }
+  }
+
+  // ============================================================
+  // LOCAL STORAGE
+  // ============================================================
+
+  function loadCart() {
+
+    try {
+
+      const saved =
+        localStorage.getItem(
+          'nigrum_minimal_cart'
+        );
+
+      if (saved) {
+        cart = JSON.parse(saved);
+      }
+
+    } catch (error) {
+
+      cart = [];
+    }
+
+    updateCartButton();
+  }
+
+  function saveCart() {
+
+    try {
+
+      localStorage.setItem(
+        'nigrum_minimal_cart',
+        JSON.stringify(cart)
       );
 
+    } catch (error) {
+
+      // Ignore storage errors.
+    }
   }
 
+  // ============================================================
+  // STATEMENT ANIMATION
+  // ============================================================
 
-  saveCart();
+  function setupIntersectionObservers() {
 
-  updateCartUI();
+    if (!statementSection) return;
 
-}
+    const observer =
+      new IntersectionObserver(
+        entries => {
 
+          entries.forEach(entry => {
 
-/* =========================================================
-   REMOVE FROM CART
-   ========================================================= */
+            if (entry.isIntersecting) {
 
-function removeFromCart(
-  productId,
-  size
-) {
+              statementSection
+                .classList
+                .add('in-view');
+            }
 
-  cart =
-    cart.filter(
-      item =>
-        !(
-          item.id ===
-          productId &&
+          });
 
-          item.size ===
-          size
-        )
-    );
+        },
+        {
+          threshold: 0.35
+        }
+      );
 
-
-  saveCart();
-
-  updateCartUI();
-
-}
-
-
-/* =========================================================
-   OPEN CART
-   ========================================================= */
-
-function openCart() {
-
-  const cartDrawer =
-    document.querySelector(
-      '#cart-drawer'
-    );
-
-
-  if (!cartDrawer) {
-
-    return;
-
+    observer.observe(statementSection);
   }
 
+  // ============================================================
+  // SMOOTH NAVIGATION
+  // ============================================================
 
-  cartDrawer.classList.add(
-    'open'
-  );
+  function setupSmoothScrollLinks() {
 
+    document
+      .querySelectorAll(
+        'a[href^="#"]'
+      )
+      .forEach(link => {
 
-  document.body.classList.add(
-    'cart-open'
-  );
+        link.addEventListener(
+          'click',
+          e => {
 
-}
-
-
-/* =========================================================
-   CLOSE CART
-   ========================================================= */
-
-function closeCart() {
-
-  const cartDrawer =
-    document.querySelector(
-      '#cart-drawer'
-    );
-
-
-  if (!cartDrawer) {
-
-    return;
-
-  }
-
-
-  cartDrawer.classList.remove(
-    'open'
-  );
-
-
-  document.body.classList.remove(
-    'cart-open'
-  );
-
-}
-
-
-/* =========================================================
-   CHECKOUT
-   ========================================================= */
-
-function checkout() {
-
-  if (
-    cart.length === 0
-  ) {
-
-    showToast(
-      'Your cart is empty'
-    );
-
-
-    return;
-
-  }
-
-
-  /*
-     PAYSTACK
-  */
-
-  window.location.href =
-    'https://paystack.shop/pay/yw9q-sw7y7';
-
-}
-
-
-/* =========================================================
-   INTERSECTION OBSERVER
-   ========================================================= */
-
-function setupIntersectionObserver() {
-
-  const elements =
-    document.querySelectorAll(
-      '[data-reveal]'
-    );
-
-
-  if (
-    !elements.length ||
-    !(
-      'IntersectionObserver'
-      in window
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  const observer =
-    new IntersectionObserver(
-
-      entries => {
-
-        entries.forEach(
-          entry => {
+            const targetId =
+              link.getAttribute('href');
 
             if (
-              entry.isIntersecting
+              targetId === '#' ||
+              !targetId
             ) {
+              return;
+            }
 
-              entry.target.classList.add(
-                'is-visible'
+            const targetEl =
+              document.querySelector(
+                targetId
               );
 
+            if (targetEl) {
 
-              observer.unobserve(
-                entry.target
-              );
+              e.preventDefault();
 
+              targetEl.scrollIntoView({
+                behavior: 'smooth'
+              });
             }
 
           }
-
         );
-
-      },
-
-      {
-        threshold: 0.15
-      }
-
-    );
-
-
-  elements.forEach(
-    element =>
-      observer.observe(
-        element
-      )
-  );
-
-}
-
-
-/* =========================================================
-   SMOOTH SCROLL
-   ========================================================= */
-
-document.addEventListener(
-  'click',
-
-  event => {
-
-    const link =
-      event.target.closest(
-        'a[href^="#"]'
-      );
-
-
-    if (!link) {
-
-      return;
-
-    }
-
-
-    const href =
-      link.getAttribute(
-        'href'
-      );
-
-
-    if (
-      !href ||
-      href === '#'
-    ) {
-
-      return;
-
-    }
-
-
-    const target =
-      document.querySelector(
-        href
-      );
-
-
-    if (!target) {
-
-      return;
-
-    }
-
-
-    event.preventDefault();
-
-
-    target.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-
+      });
   }
 
-);
+  // ============================================================
+  // TOAST
+  // ============================================================
 
+  let toastTimer = null;
 
-/* =========================================================
-   TOAST
-   ========================================================= */
+  function showToast(message) {
 
-function showToast(
-  message
-) {
+    if (!minimalToast) return;
 
-  let toast =
-    document.querySelector(
-      '.ns-toast'
+    minimalToast.textContent =
+      message;
+
+    minimalToast.classList.add(
+      'visible'
     );
 
-
-  if (!toast) {
-
-    toast =
-      document.createElement(
-        'div'
-      );
-
-
-    toast.className =
-      'ns-toast';
-
-
-    document.body.appendChild(
-      toast
-    );
-
-  }
-
-
-  toast.textContent =
-    message;
-
-
-  toast.classList.add(
-    'show'
-  );
-
-
-  clearTimeout(
-    toast._timeout
-  );
-
-
-  toast._timeout =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          'show'
-        );
-
-      },
-      2500
-    );
-
-}
-
-
-/* =========================================================
-   FINAL INITIALIZATION
-   ========================================================= */
-
-window.addEventListener(
-  'load',
-
-  () => {
-
-    /*
-       Keep hero writing visible.
-    */
-
-    keepHeroTextVisible();
-
-
-    /*
-       If the frames have not started
-       loading for some reason, try again.
-    */
-
-    if (
-      frameImages.length === 0
-    ) {
-
-      preloadFrames();
-
+    if (toastTimer) {
+      clearTimeout(toastTimer);
     }
 
+    toastTimer =
+      setTimeout(
+        () => {
+
+          minimalToast.classList.remove(
+            'visible'
+          );
+
+        },
+        2500
+      );
   }
 
-);
+  // ============================================================
+  // START
+  // ============================================================
+
+  if (
+    document.readyState ===
+    'loading'
+  ) {
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      init
+    );
+
+  } else {
+
+    init();
+  }
+
+})();
