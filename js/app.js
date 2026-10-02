@@ -1,45 +1,106 @@
 /**
+ * ============================================================
  * NIGRUM STARE — LUXURY STREETWEAR
- * Quiet. Dark. Clean. Expensive. Minimal.
+ * ============================================================
+ *
+ * MEN'S COLLECTION ONLY
+ *
+ * THREAD → FABRIC → CUT → SEW → FINISH → FORM → NIGRUM STARE
+ *
+ * 83 FRAME HERO ANIMATION
+ * CONTINUOUS LOOP
+ * 15 SECOND FULL CYCLE
+ * ============================================================
  */
 
 (function () {
   'use strict';
 
-  // ============================================================
-  // HERO ANIMATION
-  // ============================================================
+
+  /* ============================================================
+     HERO ANIMATION CONFIGURATION
+     ============================================================ */
 
   const TOTAL_FRAMES = 83;
+
   const FRAME_PREFIX = 'frames/ezgif-frame-';
+
   const FRAME_EXT = '.jpg';
 
-  // One complete animation cycle = 15 seconds
+  /*
+   * One complete animation cycle.
+   * 15 seconds.
+   */
   const AUTO_PLAY_DURATION = 15000;
 
+
+  /* ============================================================
+     HERO STAGES
+     ============================================================ */
+
   const STAGES = [
-    { name: '01 / THREAD', range: [0, 13] },
-    { name: '02 / FABRIC', range: [14, 29] },
-    { name: '03 / CUT', range: [30, 41] },
-    { name: '04 / SEW', range: [42, 55] },
-    { name: '05 / FINISH', range: [56, 65] },
-    { name: '06 / FORM', range: [66, 74] },
-    { name: '07 / NIGRUM STARE', range: [75, 82] }
+    {
+      name: '01 / THREAD',
+      range: [0, 13]
+    },
+
+    {
+      name: '02 / FABRIC',
+      range: [14, 29]
+    },
+
+    {
+      name: '03 / CUT',
+      range: [30, 41]
+    },
+
+    {
+      name: '04 / SEW',
+      range: [42, 55]
+    },
+
+    {
+      name: '05 / FINISH',
+      range: [56, 65]
+    },
+
+    {
+      name: '06 / FORM',
+      range: [66, 74]
+    },
+
+    {
+      name: '07 / NIGRUM STARE',
+      range: [75, 82]
+    }
   ];
 
-  // ============================================================
-  // PRODUCTS
-  // MEN'S COLLECTION ONLY
-  // ALL PRODUCTS: S / M / L / XL
-  // ============================================================
 
-  const STANDARD_SIZES = ['S', 'M', 'L', 'XL'];
+  /* ============================================================
+     STANDARD CLOTHING SIZES
+     ============================================================ */
+
+  const CLOTHING_SIZES = [
+    'S',
+    'M',
+    'L',
+    'XL'
+  ];
+
+  const ACCESSORY_SIZE = [
+    'ONE SIZE'
+  ];
+
+
+  /* ============================================================
+     MEN'S COLLECTION
+     ============================================================ */
 
   const PRODUCTS = [
 
-    // ----------------------------------------------------------
-    // T-SHIRTS
-    // ----------------------------------------------------------
+    /* ----------------------------------------------------------
+       T-SHIRTS
+       ---------------------------------------------------------- */
 
     {
       id: 'ns-01',
@@ -47,384 +108,471 @@
       category: 'T-SHIRTS',
       price: '$140',
       priceNum: 140,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Heavyweight cotton jersey with a clean Nigrum Stare silhouette and structured streetwear finish.',
-      sizes: STANDARD_SIZES
+      image: 'assets/products/signature-t-shirt.jpg',
+      desc: 'A heavyweight signature tee with a clean structured silhouette and understated Nigrum Stare identity.',
+      sizes: CLOTHING_SIZES
     },
 
     {
       id: 'ns-02',
-      name: 'Oversized Essential T-Shirt',
+      name: 'Oversized T-Shirt',
       category: 'T-SHIRTS',
       price: '$150',
       priceNum: 150,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Relaxed oversized silhouette cut from premium heavyweight cotton for an effortless streetwear fit.',
-      sizes: STANDARD_SIZES
+      image: 'assets/products/oversized-t-shirt.jpg',
+      desc: 'Relaxed oversized proportions with a premium heavyweight cotton construction.',
+      sizes: CLOTHING_SIZES
     },
 
     {
       id: 'ns-03',
-      name: 'Essential Long Sleeve',
+      name: 'Essential T-Shirt',
       category: 'T-SHIRTS',
-      price: '$165',
-      priceNum: 165,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Clean long-sleeve construction with a refined fit and minimal Nigrum Stare identity.',
-      sizes: STANDARD_SIZES
+      price: '$130',
+      priceNum: 130,
+      image: 'assets/products/essential-t-shirt.jpg',
+      desc: 'A refined everyday tee designed around a clean masculine silhouette.',
+      sizes: CLOTHING_SIZES
     },
 
-    // ----------------------------------------------------------
-    // HOODIES
-    // ----------------------------------------------------------
+
+    /* ----------------------------------------------------------
+       SHIRTS
+       ---------------------------------------------------------- */
 
     {
       id: 'ns-04',
+      name: 'Essential Shirt',
+      category: 'SHIRTS',
+      price: '$175',
+      priceNum: 175,
+      image: 'assets/products/essential-shirt.jpg',
+      desc: 'Minimal premium shirt with a clean cut and quiet luxury finish.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-05',
+      name: 'Structured Shirt',
+      category: 'SHIRTS',
+      price: '$190',
+      priceNum: 190,
+      image: 'assets/products/structured-shirt.jpg',
+      desc: 'A structured contemporary shirt designed for a sharp modern profile.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-06',
+      name: 'Oversized Shirt',
+      category: 'SHIRTS',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/oversized-shirt.jpg',
+      desc: 'Relaxed oversized shirt with clean lines and effortless streetwear proportions.',
+      sizes: CLOTHING_SIZES
+    },
+
+
+    /* ----------------------------------------------------------
+       LONG SLEEVE
+       ---------------------------------------------------------- */
+
+    {
+      id: 'ns-07',
+      name: 'Premium Long Sleeve',
+      category: 'LONG SLEEVE',
+      price: '$165',
+      priceNum: 165,
+      image: 'assets/products/premium-long-sleeve.jpg',
+      desc: 'Premium long sleeve essential with a refined fit and minimal finish.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-08',
+      name: 'Heavy Long Sleeve',
+      category: 'LONG SLEEVE',
+      price: '$180',
+      priceNum: 180,
+      image: 'assets/products/heavy-long-sleeve.jpg',
+      desc: 'Dense cotton long sleeve with a substantial feel and architectural silhouette.',
+      sizes: CLOTHING_SIZES
+    },
+
+
+    /* ----------------------------------------------------------
+       SWEATSHIRTS
+       ---------------------------------------------------------- */
+
+    {
+      id: 'ns-09',
+      name: 'Heavyweight Sweatshirt',
+      category: 'SWEATSHIRTS',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/heavyweight-sweatshirt.jpg',
+      desc: 'Heavyweight crewneck sweatshirt with a clean oversized streetwear profile.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-10',
+      name: 'Essential Sweatshirt',
+      category: 'SWEATSHIRTS',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/essential-sweatshirt.jpg',
+      desc: 'Minimal everyday sweatshirt designed for clean layering.',
+      sizes: CLOTHING_SIZES
+    },
+
+
+    /* ----------------------------------------------------------
+       HOODIES
+       ---------------------------------------------------------- */
+
+    {
+      id: 'ns-11',
       name: 'Classic Hoodie',
       category: 'HOODIES',
       price: '$220',
       priceNum: 220,
       image: 'assets/products/hoodie.jpg',
-      desc: 'Heavyweight French terry hoodie with a structured hood and relaxed luxury streetwear silhouette.',
-      sizes: STANDARD_SIZES
+      desc: 'Heavyweight hoodie with a structured hood and relaxed luxury streetwear silhouette.',
+      sizes: CLOTHING_SIZES
     },
 
     {
-      id: 'ns-05',
+      id: 'ns-12',
       name: 'Pro Heavyweight Hoodie',
       category: 'HOODIES',
       price: '$235',
       priceNum: 235,
       image: 'assets/products/HOODIE3.jpg',
-      desc: 'Dense heavyweight construction designed for a strong architectural silhouette.',
-      sizes: STANDARD_SIZES
+      desc: 'Dense heavyweight construction designed around a strong architectural silhouette.',
+      sizes: CLOTHING_SIZES
     },
 
     {
-      id: 'ns-06',
+      id: 'ns-13',
       name: 'Zip Hoodie',
       category: 'HOODIES',
       price: '$225',
       priceNum: 225,
-      image: 'assets/products/hoodie.jpg',
-      desc: 'Minimal full-zip hoodie with a clean premium finish and relaxed masculine profile.',
-      sizes: STANDARD_SIZES
+      image: 'assets/products/zip-hoodie.jpg',
+      desc: 'Minimal full-zip hoodie with a clean premium finish.',
+      sizes: CLOTHING_SIZES
     },
 
-    // ----------------------------------------------------------
-    // SHIRTS
-    // ----------------------------------------------------------
+
+    /* ----------------------------------------------------------
+       KAFTANS
+       ---------------------------------------------------------- */
 
     {
-      id: 'ns-07',
-      name: 'Essential Shirt',
-      category: 'SHIRTS',
-      price: '$180',
-      priceNum: 180,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Minimal everyday shirt designed with a clean cut and understated Nigrum Stare attitude.',
-      sizes: STANDARD_SIZES
-    },
-
-    {
-      id: 'ns-08',
-      name: 'Structured Overshirt',
-      category: 'SHIRTS',
-      price: '$195',
-      priceNum: 195,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Structured overshirt with a relaxed fit, designed to layer effortlessly over the collection.',
-      sizes: STANDARD_SIZES
-    },
-
-    {
-      id: 'ns-09',
-      name: 'Premium Long Sleeve Shirt',
-      category: 'SHIRTS',
-      price: '$185',
-      priceNum: 185,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Refined long sleeve shirt with a clean contemporary cut.',
-      sizes: STANDARD_SIZES
-    },
-
-    // ----------------------------------------------------------
-    // KAFTANS
-    // ----------------------------------------------------------
-
-    {
-      id: 'ns-10',
-      name: 'Nigrum Kaftan',
+      id: 'ns-14',
+      name: 'Luxury Kaftan',
       category: 'KAFTANS',
       price: '$210',
       priceNum: 210,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Relaxed premium kaftan with an elegant flowing silhouette and understated luxury finish.',
-      sizes: STANDARD_SIZES
+      image: 'assets/products/luxury-kaftan.jpg',
+      desc: 'Relaxed premium kaftan with an elegant flowing silhouette.',
+      sizes: CLOTHING_SIZES
     },
 
     {
-      id: 'ns-11',
-      name: 'Structured Kaftan',
+      id: 'ns-15',
+      name: 'Signature Kaftan',
       category: 'KAFTANS',
       price: '$225',
       priceNum: 225,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Modern structured kaftan combining traditional ease with contemporary streetwear proportions.',
-      sizes: STANDARD_SIZES
+      image: 'assets/products/signature-kaftan.jpg',
+      desc: 'Modern kaftan combining traditional ease with contemporary streetwear proportions.',
+      sizes: CLOTHING_SIZES
     },
 
     {
-      id: 'ns-12',
-      name: 'Signature Kaftan Set',
+      id: 'ns-16',
+      name: 'Structured Kaftan',
       category: 'KAFTANS',
-      price: '$250',
-      priceNum: 250,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Complete kaftan set designed for a refined statement from day to evening.',
-      sizes: STANDARD_SIZES
+      price: '$235',
+      priceNum: 235,
+      image: 'assets/products/structured-kaftan.jpg',
+      desc: 'A sharper kaftan silhouette designed for a refined statement.',
+      sizes: CLOTHING_SIZES
     },
 
-    // ----------------------------------------------------------
-    // ITALIAN PANTS
-    // ----------------------------------------------------------
+
+    /* ----------------------------------------------------------
+       ITALIAN PANTS
+       ---------------------------------------------------------- */
 
     {
-      id: 'ns-13',
+      id: 'ns-17',
       name: 'Italian Pants',
       category: 'ITALIAN PANTS',
       price: '$190',
       priceNum: 190,
       image: 'assets/products/italian-pants.jpg',
-      desc: 'Tailored Italian-inspired trousers with a relaxed luxury silhouette and clean drape.',
-      sizes: STANDARD_SIZES
-    },
-
-    {
-      id: 'ns-14',
-      name: 'Relaxed Italian Pants',
-      category: 'ITALIAN PANTS',
-      price: '$195',
-      priceNum: 195,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Relaxed wide-leg trousers balancing tailored construction with contemporary streetwear ease.',
-      sizes: STANDARD_SIZES
-    },
-
-    {
-      id: 'ns-15',
-      name: 'Pleated Italian Trousers',
-      category: 'ITALIAN PANTS',
-      price: '$210',
-      priceNum: 210,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Elegant pleated trousers with a structured waist and sophisticated fall.',
-      sizes: STANDARD_SIZES
-    },
-
-    // ----------------------------------------------------------
-    // TROUSERS
-    // ----------------------------------------------------------
-
-    {
-      id: 'ns-16',
-      name: 'Tailored Trousers',
-      category: 'TROUSERS',
-      price: '$185',
-      priceNum: 185,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Clean tailored trousers built around a sharp masculine silhouette.',
-      sizes: STANDARD_SIZES
-    },
-
-    {
-      id: 'ns-17',
-      name: 'Wide Leg Trousers',
-      category: 'TROUSERS',
-      price: '$195',
-      priceNum: 195,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Wide-leg trousers with a fluid shape and modern editorial profile.',
-      sizes: STANDARD_SIZES
+      desc: 'Italian-inspired trousers with relaxed tailoring and a clean luxury drape.',
+      sizes: CLOTHING_SIZES
     },
 
     {
       id: 'ns-18',
-      name: 'Straight Cut Trousers',
-      category: 'TROUSERS',
-      price: '$175',
-      priceNum: 175,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Straight-cut trousers with minimal detailing and a timeless silhouette.',
-      sizes: STANDARD_SIZES
+      name: 'Relaxed Italian Pants',
+      category: 'ITALIAN PANTS',
+      price: '$200',
+      priceNum: 200,
+      image: 'assets/products/relaxed-italian-pants.jpg',
+      desc: 'Relaxed wide-leg Italian trousers designed for contemporary streetwear.',
+      sizes: CLOTHING_SIZES
     },
-
-    // ----------------------------------------------------------
-    // CARGO
-    // ----------------------------------------------------------
 
     {
       id: 'ns-19',
-      name: 'Utility Cargo Pants',
-      category: 'CARGO',
-      price: '$185',
-      priceNum: 185,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Utility-inspired cargo trousers with functional pocket detailing and a refined finish.',
-      sizes: STANDARD_SIZES
+      name: 'Pleated Italian Pants',
+      category: 'ITALIAN PANTS',
+      price: '$215',
+      priceNum: 215,
+      image: 'assets/products/pleated-italian-pants.jpg',
+      desc: 'Premium pleated trousers with a sophisticated tailored fall.',
+      sizes: CLOTHING_SIZES
     },
+
+
+    /* ----------------------------------------------------------
+       TROUSERS
+       ---------------------------------------------------------- */
 
     {
       id: 'ns-20',
-      name: 'Relaxed Cargo Pants',
-      category: 'CARGO',
-      price: '$190',
-      priceNum: 190,
-      image: 'assets/products/italian-pants.jpg',
-      desc: 'Relaxed cargo silhouette designed for everyday movement and streetwear layering.',
-      sizes: STANDARD_SIZES
+      name: 'Wide-Leg Trousers',
+      category: 'TROUSERS',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/wide-leg-trousers.jpg',
+      desc: 'Wide-leg trousers with a fluid shape and modern editorial profile.',
+      sizes: CLOTHING_SIZES
     },
-
-    // ----------------------------------------------------------
-    // SHORTS
-    // ----------------------------------------------------------
 
     {
       id: 'ns-21',
-      name: 'Relaxed Shorts',
-      category: 'SHORTS',
-      price: '$120',
-      priceNum: 120,
-      image: 'assets/products/t3.jpg',
-      desc: 'Relaxed heavyweight shorts with a clean, minimal streetwear silhouette.',
-      sizes: STANDARD_SIZES
+      name: 'Tailored Trousers',
+      category: 'TROUSERS',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/tailored-trousers.jpg',
+      desc: 'Clean tailored trousers built around a sharp masculine silhouette.',
+      sizes: CLOTHING_SIZES
     },
 
     {
       id: 'ns-22',
+      name: 'Straight-Leg Pants',
+      category: 'TROUSERS',
+      price: '$175',
+      priceNum: 175,
+      image: 'assets/products/straight-leg-pants.jpg',
+      desc: 'Straight-cut pants with minimal detailing and a timeless profile.',
+      sizes: CLOTHING_SIZES
+    },
+
+
+    /* ----------------------------------------------------------
+       CARGO
+       ---------------------------------------------------------- */
+
+    {
+      id: 'ns-23',
+      name: 'Cargo Pants',
+      category: 'CARGO',
+      price: '$185',
+      priceNum: 185,
+      image: 'assets/products/cargo-pants.jpg',
+      desc: 'Utility-inspired cargo pants with functional detailing and a refined finish.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-24',
+      name: 'Relaxed Cargo Pants',
+      category: 'CARGO',
+      price: '$195',
+      priceNum: 195,
+      image: 'assets/products/relaxed-cargo-pants.jpg',
+      desc: 'Relaxed cargo silhouette designed for everyday movement and layering.',
+      sizes: CLOTHING_SIZES
+    },
+
+
+    /* ----------------------------------------------------------
+       SHORTS
+       ---------------------------------------------------------- */
+
+    {
+      id: 'ns-25',
+      name: 'Premium Shorts',
+      category: 'SHORTS',
+      price: '$120',
+      priceNum: 120,
+      image: 'assets/products/premium-shorts.jpg',
+      desc: 'Premium relaxed shorts with a clean minimal streetwear silhouette.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-26',
       name: 'Signature Shorts',
       category: 'SHORTS',
       price: '$125',
       priceNum: 125,
-      image: 'assets/products/t3.jpg',
-      desc: 'Premium everyday shorts designed to pair with the Nigrum Stare essentials.',
-      sizes: STANDARD_SIZES
+      image: 'assets/products/signature-shorts.jpg',
+      desc: 'Everyday heavyweight shorts designed to pair with Nigrum Stare essentials.',
+      sizes: CLOTHING_SIZES
     },
 
-    // ----------------------------------------------------------
-    // SETS
-    // ----------------------------------------------------------
+
+    /* ----------------------------------------------------------
+       SETS
+       ---------------------------------------------------------- */
 
     {
-      id: 'ns-23',
+      id: 'ns-27',
+      name: 'T-Shirt & Italian Pants Set',
+      category: 'SETS',
+      price: '$285',
+      priceNum: 285,
+      image: 'assets/products/t-shirt-italian-pants-set.jpg',
+      desc: 'Complete look pairing a signature tee with refined Italian trousers.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-28',
+      name: 'Shirt & Italian Pants Set',
+      category: 'SETS',
+      price: '$310',
+      priceNum: 310,
+      image: 'assets/products/shirt-italian-pants-set.jpg',
+      desc: 'Premium coordinated shirt and Italian trouser set.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-29',
+      name: 'Kaftan Set',
+      category: 'SETS',
+      price: '$250',
+      priceNum: 250,
+      image: 'assets/products/kaftan-set.jpg',
+      desc: 'Complete relaxed kaftan set designed for effortless statement dressing.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-30',
+      name: 'Sweatshirt & Pants Set',
+      category: 'SETS',
+      price: '$275',
+      priceNum: 275,
+      image: 'assets/products/sweatshirt-pants-set.jpg',
+      desc: 'Matching heavyweight sweatshirt and relaxed trousers.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-31',
+      name: 'Hoodie & Pants Set',
+      category: 'SETS',
+      price: '$295',
+      priceNum: 295,
+      image: 'assets/products/hoodie-pants-set.jpg',
+      desc: 'Complete heavyweight hoodie and trouser combination.',
+      sizes: CLOTHING_SIZES
+    },
+
+    {
+      id: 'ns-32',
       name: 'Sweatshirt & Shorts Set',
       category: 'SETS',
       price: '$195',
       priceNum: 195,
       image: 'assets/products/t3.jpg',
       desc: 'Matching heavyweight sweatshirt and relaxed shorts set.',
-      sizes: STANDARD_SIZES
+      sizes: CLOTHING_SIZES
     },
 
-    {
-      id: 'ns-24',
-      name: 'T-Shirt & Italian Pants Set',
-      category: 'SETS',
-      price: '$285',
-      priceNum: 285,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Complete Nigrum Stare look pairing a signature tee with refined Italian trousers.',
-      sizes: STANDARD_SIZES
-    },
+
+    /* ----------------------------------------------------------
+       ACCESSORIES
+       ---------------------------------------------------------- */
 
     {
-      id: 'ns-25',
-      name: 'Shirt & Italian Pants Set',
-      category: 'SETS',
-      price: '$310',
-      priceNum: 310,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Premium coordinated shirt and trouser set with a clean luxury silhouette.',
-      sizes: STANDARD_SIZES
-    },
-
-    {
-      id: 'ns-26',
-      name: 'Kaftan Set',
-      category: 'SETS',
-      price: '$250',
-      priceNum: 250,
-      image: 'assets/products/t 2.jpg',
-      desc: 'Complete relaxed kaftan set designed for effortless statement dressing.',
-      sizes: STANDARD_SIZES
-    },
-
-    // ----------------------------------------------------------
-    // ACCESSORIES
-    // ----------------------------------------------------------
-
-    {
-      id: 'ns-27',
+      id: 'ns-33',
       name: 'Structured Tactical Cap',
       category: 'ACCESSORIES',
       price: '$75',
       priceNum: 75,
       image: 'assets/products/cap.jpg',
-      desc: 'Structured six-panel cap with a clean tactical profile and understated branding.',
-      sizes: STANDARD_SIZES
+      desc: 'Structured six-panel cap with a clean tactical profile.',
+      sizes: ACCESSORY_SIZE
     },
 
     {
-      id: 'ns-28',
-      name: 'Wool Fisherman Beanie',
+      id: 'ns-34',
+      name: 'Fisherman Beanie',
       category: 'ACCESSORIES',
       price: '$65',
       priceNum: 65,
       image: 'assets/products/ROYBENS 2 Pack Wool Fisherman Beanies for Men, Knit Short Watch Cap Winter Warm Hats.jpg',
       desc: 'Dense knitted fisherman beanie with a clean minimalist silhouette.',
-      sizes: STANDARD_SIZES
+      sizes: ACCESSORY_SIZE
     },
 
     {
-      id: 'ns-29',
-      name: 'Solid Trucker Hat',
+      id: 'ns-35',
+      name: 'Trucker Hat',
       category: 'ACCESSORIES',
       price: '$70',
       priceNum: 70,
       image: 'assets/products/Men Solid Trucker Hat.jpg',
       desc: 'Structured trucker hat with a clean masculine profile.',
-      sizes: STANDARD_SIZES
+      sizes: ACCESSORY_SIZE
     },
 
     {
-      id: 'ns-30',
+      id: 'ns-36',
       name: 'Tactical Bandana',
       category: 'ACCESSORIES',
       price: '$45',
       priceNum: 45,
       image: 'assets/products/1pc Quick Dry Sports Bandana.jpg',
-      desc: 'Technical bandana designed for versatile everyday styling.',
-      sizes: STANDARD_SIZES
+      desc: 'Technical bandana designed as a versatile finishing piece.',
+      sizes: ACCESSORY_SIZE
     },
 
     {
-      id: 'ns-31',
+      id: 'ns-37',
       name: 'Turban Headwrap',
       category: 'ACCESSORIES',
       price: '$50',
       priceNum: 50,
       image: 'assets/products/Turban.jpg',
       desc: 'Clean structured headwrap designed as a bold finishing piece.',
-      sizes: STANDARD_SIZES
+      sizes: ACCESSORY_SIZE
     }
 
   ];
 
-  // ============================================================
-  // STATE
-  // ============================================================
+
+  /* ============================================================
+     STATE
+     ============================================================ */
 
   const frameImages = new Array(TOTAL_FRAMES);
+
   let framesLoaded = 0;
 
   let canvas;
@@ -435,46 +583,88 @@
   let cart = [];
 
   let animationStarted = false;
+
   let animationStartTime = 0;
 
-  // ============================================================
-  // DOM
-  // ============================================================
-
-  const heroCanvas = document.getElementById('heroCanvas');
-  const heroContainer = document.getElementById('hero');
-
-  const heroTitleBlock = document.getElementById('heroTitleBlock');
-  const heroScrollHint = document.getElementById('heroScrollHint');
-  const stageIndicator = document.getElementById('stageIndicator');
-
-  const productGrid = document.getElementById('productGrid');
-
-  const productModal = document.getElementById('productModal');
-  const modalCloseBtn = document.getElementById('modalCloseBtn');
-  const modalImage = document.getElementById('modalImage');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalDesc = document.getElementById('modalDesc');
-  const modalPrice = document.getElementById('modalPrice');
-  const modalSizes = document.getElementById('modalSizes');
-  const modalAddBtn = document.getElementById('modalAddBtn');
-
-  const cartBtn = document.getElementById('cartBtn');
-  const cartBackdrop = document.getElementById('cartBackdrop');
-  const cartCloseBtn = document.getElementById('cartCloseBtn');
-  const cartItemsContainer = document.getElementById('cartItemsContainer');
-  const cartSubtotal = document.getElementById('cartSubtotal');
-  const cartCheckoutBtn = document.getElementById('cartCheckoutBtn');
-
-  const statementSection = document.getElementById('statementSection');
-  const minimalToast = document.getElementById('minimalToast');
-
   let activeProduct = null;
+
   let selectedSize = null;
 
-  // ============================================================
-  // INITIALIZATION
-  // ============================================================
+
+  /* ============================================================
+     DOM ELEMENTS
+     ============================================================ */
+
+  const heroCanvas =
+    document.getElementById('heroCanvas');
+
+  const heroContainer =
+    document.getElementById('hero');
+
+  const heroTitleBlock =
+    document.getElementById('heroTitleBlock');
+
+  const heroScrollHint =
+    document.getElementById('heroScrollHint');
+
+  const stageIndicator =
+    document.getElementById('stageIndicator');
+
+  const productGrid =
+    document.getElementById('productGrid');
+
+  const productModal =
+    document.getElementById('productModal');
+
+  const modalCloseBtn =
+    document.getElementById('modalCloseBtn');
+
+  const modalImage =
+    document.getElementById('modalImage');
+
+  const modalTitle =
+    document.getElementById('modalTitle');
+
+  const modalDesc =
+    document.getElementById('modalDesc');
+
+  const modalPrice =
+    document.getElementById('modalPrice');
+
+  const modalSizes =
+    document.getElementById('modalSizes');
+
+  const modalAddBtn =
+    document.getElementById('modalAddBtn');
+
+  const cartBtn =
+    document.getElementById('cartBtn');
+
+  const cartBackdrop =
+    document.getElementById('cartBackdrop');
+
+  const cartCloseBtn =
+    document.getElementById('cartCloseBtn');
+
+  const cartItemsContainer =
+    document.getElementById('cartItemsContainer');
+
+  const cartSubtotal =
+    document.getElementById('cartSubtotal');
+
+  const cartCheckoutBtn =
+    document.getElementById('cartCheckoutBtn');
+
+  const statementSection =
+    document.getElementById('statementSection');
+
+  const minimalToast =
+    document.getElementById('minimalToast');
+
+
+  /* ============================================================
+     INITIALIZE
+     ============================================================ */
 
   function init() {
 
@@ -484,9 +674,10 @@
 
     ctx = canvas.getContext('2d');
 
-    // Keep hero at one viewport.
     if (heroContainer) {
+
       heroContainer.style.height = '100vh';
+
       heroContainer.style.minHeight = '100vh';
     }
 
@@ -494,7 +685,10 @@
 
     resizeCanvas();
 
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener(
+      'resize',
+      resizeCanvas
+    );
 
     preloadFrames();
 
@@ -510,89 +704,137 @@
 
     setupSmoothScrollLinks();
 
-    requestAnimationFrame(renderLoop);
+    keepHeroTextVisible();
+
+    requestAnimationFrame(
+      renderLoop
+    );
   }
 
-  // ============================================================
-  // CANVAS
-  // ============================================================
+
+  /* ============================================================
+     CANVAS RESIZE
+     ============================================================ */
 
   function resizeCanvas() {
 
     if (!canvas) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr =
+      Math.min(
+        window.devicePixelRatio || 1,
+        2
+      );
 
-    const rect = canvas.getBoundingClientRect();
+    const rect =
+      canvas.getBoundingClientRect();
 
-    canvas.width = (rect.width || window.innerWidth) * dpr;
-    canvas.height = (rect.height || window.innerHeight) * dpr;
+    canvas.width =
+      (rect.width || window.innerWidth) *
+      dpr;
+
+    canvas.height =
+      (rect.height || window.innerHeight) *
+      dpr;
 
     if (ctx) {
+
       ctx.imageSmoothingEnabled = true;
+
       ctx.imageSmoothingQuality = 'high';
     }
 
-    // Redraw current frame after resizing.
-    const frame = frameImages[Math.floor(currentFrame)];
+    const frame =
+      frameImages[
+        Math.floor(currentFrame)
+      ];
 
     if (frame) {
+
       drawFrame(frame);
     }
   }
 
-  // ============================================================
-  // LOAD ALL 83 FRAMES
-  // ============================================================
+
+  /* ============================================================
+     PRELOAD HERO FRAMES
+     ============================================================ */
 
   function preloadFrames() {
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    for (
+      let i = 1;
+      i <= TOTAL_FRAMES;
+      i++
+    ) {
 
-      const img = new Image();
+      const img =
+        new Image();
 
-      const padded = String(i).padStart(3, '0');
+      const padded =
+        String(i).padStart(
+          3,
+          '0'
+        );
 
-      img.src = `${FRAME_PREFIX}${padded}${FRAME_EXT}`;
+      img.src =
+        `${FRAME_PREFIX}${padded}${FRAME_EXT}`;
+
 
       img.onload = () => {
 
-        frameImages[i - 1] = img;
+        frameImages[i - 1] =
+          img;
 
         framesLoaded++;
 
-        if (i === 1 && currentFrame === 0) {
+
+        if (
+          i === 1 &&
+          currentFrame === 0
+        ) {
+
           drawFrame(img);
         }
 
-        // Start only after all frames are available.
+
+        /*
+         * We wait for every frame before
+         * starting the cinematic loop.
+         */
+
         if (
-          framesLoaded === TOTAL_FRAMES &&
+          framesLoaded ===
+          TOTAL_FRAMES &&
           !animationStarted
         ) {
+
           startAutoPlay();
         }
       };
 
+
       img.onerror = () => {
 
-        // Count failed frame so one missing image
-        // does not permanently prevent playback.
         framesLoaded++;
 
+
         if (
-          framesLoaded === TOTAL_FRAMES &&
+          framesLoaded ===
+          TOTAL_FRAMES &&
           !animationStarted
         ) {
+
           startAutoPlay();
         }
       };
     }
   }
 
-  // ============================================================
-  // CONTINUOUS 15 SECOND LOOP
-  // ============================================================
+
+  /* ============================================================
+     CONTINUOUS HERO LOOP
+     ============================================================ */
 
   function startAutoPlay() {
 
@@ -600,141 +842,223 @@
 
     animationStarted = true;
 
-    animationStartTime = performance.now();
+    animationStartTime =
+      performance.now();
 
     keepHeroTextVisible();
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(
+      animate
+    );
   }
+
 
   function animate(now) {
 
+    /*
+     * MODULO LOOP
+     *
+     * 083 → 001 happens naturally.
+     * There is NO reverse travel.
+     */
+
     const elapsed =
-      (now - animationStartTime) % AUTO_PLAY_DURATION;
+      (
+        now -
+        animationStartTime
+      ) %
+      AUTO_PLAY_DURATION;
+
 
     const progress =
-      elapsed / AUTO_PLAY_DURATION;
+      elapsed /
+      AUTO_PLAY_DURATION;
+
 
     const targetFrame =
-      progress * (TOTAL_FRAMES - 1);
+      progress *
+      (TOTAL_FRAMES - 1);
 
-    // IMPORTANT:
-    // Direct frame positioning is used here.
-    // This prevents the 083 -> 001 transition
-    // from travelling backwards.
-    currentFrame = targetFrame;
+
+    currentFrame =
+      targetFrame;
+
 
     const frameIndex =
       Math.floor(currentFrame);
 
+
     const frame =
       frameImages[frameIndex];
 
+
     if (frame) {
+
       drawFrame(frame);
     }
 
+
     keepHeroTextVisible();
 
-    updateStageIndicator(progress);
+    updateStageIndicator(
+      progress
+    );
 
-    requestAnimationFrame(animate);
+
+    requestAnimationFrame(
+      animate
+    );
   }
 
-  // ============================================================
-  // HERO TEXT ALWAYS VISIBLE
-  // ============================================================
+
+  /* ============================================================
+     HERO TEXT — ALWAYS VISIBLE
+     ============================================================ */
 
   function keepHeroTextVisible() {
 
     if (heroTitleBlock) {
 
-      heroTitleBlock.style.opacity = '1';
+      heroTitleBlock.style.opacity =
+        '1';
 
-      heroTitleBlock.style.visibility = 'visible';
+      heroTitleBlock.style.visibility =
+        'visible';
 
-      heroTitleBlock.style.display = 'block';
+      heroTitleBlock.style.display =
+        'block';
 
       heroTitleBlock.style.transform =
         'translate(-50%, -50%)';
     }
 
+
     if (heroScrollHint) {
 
-      heroScrollHint.style.opacity = '1';
+      heroScrollHint.style.opacity =
+        '1';
 
-      heroScrollHint.style.visibility = 'visible';
+      heroScrollHint.style.visibility =
+        'visible';
     }
   }
 
-  // ============================================================
-  // STAGE INDICATOR
-  // ============================================================
 
-  function updateStageIndicator(progress) {
+  /* ============================================================
+     STAGE INDICATOR
+     ============================================================ */
+
+  function updateStageIndicator(
+    progress
+  ) {
 
     if (!stageIndicator) return;
 
     const frameIndex =
-      Math.round(progress * (TOTAL_FRAMES - 1));
+      Math.round(
+        progress *
+        (TOTAL_FRAMES - 1)
+      );
 
-    let matchedStage = STAGES[0].name;
 
-    for (let i = 0; i < STAGES.length; i++) {
+    let stage =
+      STAGES[0].name;
+
+
+    for (
+      let i = 0;
+      i < STAGES.length;
+      i++
+    ) {
 
       if (
-        frameIndex >= STAGES[i].range[0] &&
-        frameIndex <= STAGES[i].range[1]
+        frameIndex >=
+        STAGES[i].range[0] &&
+
+        frameIndex <=
+        STAGES[i].range[1]
       ) {
 
-        matchedStage = STAGES[i].name;
+        stage =
+          STAGES[i].name;
 
         break;
       }
     }
 
-    stageIndicator.textContent = matchedStage;
+
+    stageIndicator.textContent =
+      stage;
   }
 
-  // ============================================================
-  // SCROLL
-  // Animation DOES NOT stop when scrolling.
-  // ============================================================
+
+  /* ============================================================
+     SCROLL
+     ============================================================ */
 
   function setupScrollListener() {
 
     window.addEventListener(
       'scroll',
       () => {
+
+        /*
+         * Scrolling does NOT control
+         * the animation.
+         */
+
         keepHeroTextVisible();
+
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
   }
 
-  // ============================================================
-  // FRAME RENDER
-  // ============================================================
+
+  /* ============================================================
+     RENDER LOOP
+     ============================================================ */
 
   function renderLoop() {
 
-    // Keep rendering current frame.
     const frameIndex =
-      Math.floor(currentFrame);
+      Math.floor(
+        currentFrame
+      );
+
 
     const frame =
-      frameImages[frameIndex];
+      frameImages[
+        frameIndex
+      ];
+
 
     if (frame) {
+
       drawFrame(frame);
     }
 
-    requestAnimationFrame(renderLoop);
+
+    requestAnimationFrame(
+      renderLoop
+    );
   }
+
+
+  /* ============================================================
+     DRAW HERO FRAME
+     ============================================================ */
 
   function drawFrame(img) {
 
-    if (!ctx || !canvas || !img) return;
+    if (
+      !ctx ||
+      !canvas ||
+      !img
+    ) return;
+
 
     ctx.clearRect(
       0,
@@ -743,18 +1067,26 @@
       canvas.height
     );
 
+
     const srcW =
       img.naturalWidth ||
       img.width ||
       1280;
+
 
     const srcH =
       img.naturalHeight ||
       img.height ||
       720;
 
-    const canvasW = canvas.width;
-    const canvasH = canvas.height;
+
+    const canvasW =
+      canvas.width;
+
+
+    const canvasH =
+      canvas.height;
+
 
     const scale =
       Math.max(
@@ -762,17 +1094,22 @@
         canvasH / srcH
       );
 
+
     const drawW =
       srcW * scale;
+
 
     const drawH =
       srcH * scale;
 
+
     const drawX =
       (canvasW - drawW) / 2;
 
+
     const drawY =
       (canvasH - drawH) / 2;
+
 
     ctx.drawImage(
       img,
@@ -787,9 +1124,10 @@
     );
   }
 
-  // ============================================================
-  // PRODUCTS
-  // ============================================================
+
+  /* ============================================================
+     PRODUCT GRID
+     ============================================================ */
 
   function renderProducts() {
 
@@ -797,58 +1135,111 @@
 
     productGrid.innerHTML = '';
 
-    PRODUCTS.forEach(product => {
 
-      const item =
-        document.createElement('div');
+    PRODUCTS.forEach(
+      product => {
 
-      item.className = 'product-item';
+        const item =
+          document.createElement(
+            'article'
+          );
 
-      item.dataset.id = product.id;
 
-      item.innerHTML = `
+        item.className =
+          'product-item';
 
-        <div class="product-image-wrap">
 
-          <img
-            src="${product.image}"
-            alt="${product.name}"
-            loading="lazy"
-            onerror="this.src='assets/products/t 2.jpg'"
-          />
+        item.dataset.id =
+          product.id;
 
-          <div class="product-hover-view">
-            <span class="view-label">VIEW</span>
+
+        item.dataset.category =
+          product.category;
+
+
+        item.innerHTML = `
+
+          <div class="product-image-wrap">
+
+            <img
+              src="${product.image}"
+              alt="${product.name}"
+              loading="lazy"
+            >
+
+            <div class="product-hover-view">
+
+              <span class="view-label">
+                VIEW
+              </span>
+
+            </div>
+
           </div>
 
-        </div>
 
-        <div class="product-meta">
+          <div class="product-meta">
 
-          <span class="product-name">
-            ${product.name}
-          </span>
+            <span class="product-name">
+              ${product.name}
+            </span>
 
-          <span class="product-price">
-            ${product.price}
-          </span>
+            <span class="product-price">
+              ${product.price}
+            </span>
 
-        </div>
+          </div>
 
-      `;
+        `;
 
-      item.addEventListener(
-        'click',
-        () => openProductModal(product)
-      );
 
-      productGrid.appendChild(item);
-    });
+        const image =
+          item.querySelector(
+            'img'
+          );
+
+
+        /*
+         * If a new product image has not
+         * been uploaded yet, keep the
+         * product space clean instead of
+         * breaking the entire page.
+         */
+
+        image.addEventListener(
+          'error',
+          () => {
+
+            image.style.visibility =
+              'hidden';
+
+          }
+        );
+
+
+        item.addEventListener(
+          'click',
+          () => {
+
+            openProductModal(
+              product
+            );
+
+          }
+        );
+
+
+        productGrid.appendChild(
+          item
+        );
+      }
+    );
   }
 
-  // ============================================================
-  // PRODUCT MODAL
-  // ============================================================
+
+  /* ============================================================
+     PRODUCT MODAL
+     ============================================================ */
 
   function setupProductModal() {
 
@@ -860,19 +1251,24 @@
       );
     }
 
+
     if (productModal) {
 
       productModal.addEventListener(
         'click',
-        e => {
+        event => {
 
-          if (e.target === productModal) {
+          if (
+            event.target ===
+            productModal
+          ) {
+
             closeProductModal();
           }
-
         }
       );
     }
+
 
     if (modalAddBtn) {
 
@@ -880,19 +1276,26 @@
         'click',
         () => {
 
-          if (!activeProduct) return;
+          if (!activeProduct) {
+            return;
+          }
+
 
           if (!selectedSize) {
 
-            showToast('SELECT SIZE');
+            showToast(
+              'SELECT SIZE'
+            );
 
             return;
           }
+
 
           addToCart(
             activeProduct,
             selectedSize
           );
+
 
           closeProductModal();
         }
@@ -900,97 +1303,165 @@
     }
   }
 
-  function openProductModal(product) {
 
-    activeProduct = product;
+  function openProductModal(
+    product
+  ) {
 
-    selectedSize = product.sizes[0];
+    activeProduct =
+      product;
+
+
+    selectedSize =
+      product.sizes[0];
+
 
     if (modalImage) {
 
-      modalImage.src = product.image;
+      modalImage.src =
+        product.image;
 
-      modalImage.alt = product.name;
+      modalImage.alt =
+        product.name;
 
-      modalImage.onerror = () => {
-        modalImage.src =
-          'assets/products/t 2.jpg';
-      };
+      modalImage.style.visibility =
+        'visible';
+
+      modalImage.onerror =
+        () => {
+
+          modalImage.style.visibility =
+            'hidden';
+        };
     }
 
+
     if (modalTitle) {
+
       modalTitle.textContent =
         product.name;
     }
 
+
     if (modalDesc) {
+
       modalDesc.textContent =
         product.desc;
     }
 
+
     if (modalPrice) {
+
       modalPrice.textContent =
         product.price;
     }
 
+
     if (modalSizes) {
 
-      modalSizes.innerHTML = '';
+      modalSizes.innerHTML =
+        '';
+
 
       product.sizes.forEach(
         (size, index) => {
 
           const button =
-            document.createElement('button');
+            document.createElement(
+              'button'
+            );
+
+
+          button.type =
+            'button';
+
 
           button.className =
-            `size-btn ${
-              index === 0
-                ? 'active'
-                : ''
-            }`;
+            'size-btn';
 
-          button.textContent = size;
+
+          if (index === 0) {
+
+            button.classList.add(
+              'active'
+            );
+          }
+
+
+          button.textContent =
+            size;
+
 
           button.addEventListener(
             'click',
             () => {
 
               modalSizes
-                .querySelectorAll('.size-btn')
-                .forEach(btn => {
-                  btn.classList.remove('active');
-                });
+                .querySelectorAll(
+                  '.size-btn'
+                )
+                .forEach(
+                  btn => {
 
-              button.classList.add('active');
+                    btn.classList.remove(
+                      'active'
+                    );
 
-              selectedSize = size;
+                  }
+                );
+
+
+              button.classList.add(
+                'active'
+              );
+
+
+              selectedSize =
+                size;
             }
           );
 
-          modalSizes.appendChild(button);
+
+          modalSizes.appendChild(
+            button
+          );
         }
       );
     }
 
+
     if (productModal) {
-      productModal.classList.add('open');
-      document.body.classList.add('modal-open');
+
+      productModal.classList.add(
+        'open'
+      );
+
+      document.body.classList.add(
+        'modal-open'
+      );
     }
   }
+
 
   function closeProductModal() {
 
     if (productModal) {
-      productModal.classList.remove('open');
+
+      productModal.classList.remove(
+        'open'
+      );
     }
 
-    document.body.classList.remove('modal-open');
+
+    document.body.classList.remove(
+      'modal-open'
+    );
   }
 
-  // ============================================================
-  // CART
-  // ============================================================
+
+  /* ============================================================
+     CART
+     ============================================================ */
 
   function setupCartDrawer() {
 
@@ -1002,6 +1473,7 @@
       );
     }
 
+
     if (cartCloseBtn) {
 
       cartCloseBtn.addEventListener(
@@ -1010,19 +1482,24 @@
       );
     }
 
+
     if (cartBackdrop) {
 
       cartBackdrop.addEventListener(
         'click',
-        e => {
+        event => {
 
-          if (e.target === cartBackdrop) {
+          if (
+            event.target ===
+            cartBackdrop
+          ) {
+
             closeCart();
           }
-
         }
       );
     }
+
 
     if (cartCheckoutBtn) {
 
@@ -1030,12 +1507,17 @@
         'click',
         () => {
 
-          if (cart.length === 0) {
+          if (
+            cart.length === 0
+          ) {
 
-            showToast('BAG EMPTY');
+            showToast(
+              'BAG EMPTY'
+            );
 
             return;
           }
+
 
           window.open(
             'https://paystack.shop/pay/yw9q-sw7y7',
@@ -1046,23 +1528,36 @@
     }
   }
 
+
   function openCart() {
 
     renderCart();
 
+
     if (cartBackdrop) {
-      cartBackdrop.classList.add('open');
+
+      cartBackdrop.classList.add(
+        'open'
+      );
     }
   }
+
 
   function closeCart() {
 
     if (cartBackdrop) {
-      cartBackdrop.classList.remove('open');
+
+      cartBackdrop.classList.remove(
+        'open'
+      );
     }
   }
 
-  function addToCart(product, size) {
+
+  function addToCart(
+    product,
+    size
+  ) {
 
     const existing =
       cart.find(
@@ -1070,6 +1565,7 @@
           item.id === product.id &&
           item.size === size
       );
+
 
     if (existing) {
 
@@ -1096,6 +1592,7 @@
       });
     }
 
+
     saveCart();
 
     updateCartButton();
@@ -1104,49 +1601,72 @@
 
     openCart();
 
+
     showToast(
       `ADDED ${product.name}`
     );
   }
 
+
   function updateCartButton() {
 
-    const totalCount =
+    const count =
       cart.reduce(
-        (total, item) =>
-          total + item.qty,
+        (
+          total,
+          item
+        ) =>
+          total +
+          item.qty,
         0
       );
+
 
     if (cartBtn) {
 
       cartBtn.textContent =
-        `CART (${totalCount})`;
+        `CART (${count})`;
     }
   }
 
+
   function renderCart() {
 
-    if (!cartItemsContainer) return;
+    if (
+      !cartItemsContainer
+    ) return;
 
-    cartItemsContainer.innerHTML = '';
 
-    if (cart.length === 0) {
+    cartItemsContainer.innerHTML =
+      '';
 
-      cartItemsContainer.innerHTML =
-        `<p class="cart-empty-text">
+
+    if (
+      cart.length === 0
+    ) {
+
+      cartItemsContainer.innerHTML = `
+
+        <p class="cart-empty-text">
           BAG IS EMPTY
-        </p>`;
+        </p>
+
+      `;
+
 
       if (cartSubtotal) {
+
         cartSubtotal.textContent =
           '$0';
       }
 
+
       return;
     }
 
+
     let total = 0;
+
 
     cart.forEach(
       (item, index) => {
@@ -1155,11 +1675,16 @@
           item.priceNum *
           item.qty;
 
+
         const row =
-          document.createElement('div');
+          document.createElement(
+            'div'
+          );
+
 
         row.className =
           'cart-item-row';
+
 
         row.innerHTML = `
 
@@ -1167,8 +1692,8 @@
             src="${item.image}"
             alt="${item.name}"
             class="cart-item-img"
-            onerror="this.src='assets/products/t 2.jpg'"
-          />
+          >
+
 
           <div class="cart-item-info">
 
@@ -1177,7 +1702,8 @@
             </div>
 
             <div class="cart-item-size">
-              SIZE: ${item.size} × ${item.qty}
+              SIZE: ${item.size}
+              × ${item.qty}
             </div>
 
             <div class="cart-item-price">
@@ -1186,35 +1712,48 @@
 
           </div>
 
+
           <button
+            type="button"
             class="cart-item-remove"
-            data-index="${index}"
           >
             REMOVE
           </button>
+
         `;
 
-        row
-          .querySelector(
+
+        const removeButton =
+          row.querySelector(
             '.cart-item-remove'
-          )
-          .addEventListener(
-            'click',
-            () => {
-
-              cart.splice(index, 1);
-
-              saveCart();
-
-              updateCartButton();
-
-              renderCart();
-            }
           );
 
-        cartItemsContainer.appendChild(row);
+
+        removeButton.addEventListener(
+          'click',
+          () => {
+
+            cart.splice(
+              index,
+              1
+            );
+
+
+            saveCart();
+
+            updateCartButton();
+
+            renderCart();
+          }
+        );
+
+
+        cartItemsContainer.appendChild(
+          row
+        );
       }
     );
+
 
     if (cartSubtotal) {
 
@@ -1223,9 +1762,10 @@
     }
   }
 
-  // ============================================================
-  // LOCAL STORAGE
-  // ============================================================
+
+  /* ============================================================
+     LOCAL STORAGE
+     ============================================================ */
 
   function loadCart() {
 
@@ -1236,8 +1776,11 @@
           'nigrum_minimal_cart'
         );
 
+
       if (saved) {
-        cart = JSON.parse(saved);
+
+        cart =
+          JSON.parse(saved);
       }
 
     } catch (error) {
@@ -1245,8 +1788,10 @@
       cart = [];
     }
 
+
     updateCartButton();
   }
+
 
   function saveCart() {
 
@@ -1263,28 +1808,35 @@
     }
   }
 
-  // ============================================================
-  // STATEMENT ANIMATION
-  // ============================================================
+
+  /* ============================================================
+     STATEMENT SECTION
+     ============================================================ */
 
   function setupIntersectionObservers() {
 
-    if (!statementSection) return;
+    if (!statementSection) {
+      return;
+    }
+
 
     const observer =
       new IntersectionObserver(
         entries => {
 
-          entries.forEach(entry => {
+          entries.forEach(
+            entry => {
 
-            if (entry.isIntersecting) {
+              if (
+                entry.isIntersecting
+              ) {
 
-              statementSection
-                .classList
-                .add('in-view');
+                statementSection.classList.add(
+                  'in-view'
+                );
+              }
             }
-
-          });
+          );
 
         },
         {
@@ -1292,12 +1844,16 @@
         }
       );
 
-    observer.observe(statementSection);
+
+    observer.observe(
+      statementSection
+    );
   }
 
-  // ============================================================
-  // SMOOTH NAVIGATION
-  // ============================================================
+
+  /* ============================================================
+     SMOOTH LINKS
+     ============================================================ */
 
   function setupSmoothScrollLinks() {
 
@@ -1305,61 +1861,84 @@
       .querySelectorAll(
         'a[href^="#"]'
       )
-      .forEach(link => {
+      .forEach(
+        link => {
 
-        link.addEventListener(
-          'click',
-          e => {
+          link.addEventListener(
+            'click',
+            event => {
 
-            const targetId =
-              link.getAttribute('href');
+              const targetId =
+                link.getAttribute(
+                  'href'
+                );
 
-            if (
-              targetId === '#' ||
-              !targetId
-            ) {
-              return;
+
+              if (
+                targetId === '#' ||
+                !targetId
+              ) {
+
+                return;
+              }
+
+
+              const target =
+                document.querySelector(
+                  targetId
+                );
+
+
+              if (target) {
+
+                event.preventDefault();
+
+
+                target.scrollIntoView({
+                  behavior:
+                    'smooth'
+                });
+              }
             }
-
-            const targetEl =
-              document.querySelector(
-                targetId
-              );
-
-            if (targetEl) {
-
-              e.preventDefault();
-
-              targetEl.scrollIntoView({
-                behavior: 'smooth'
-              });
-            }
-
-          }
-        );
-      });
+          );
+        }
+      );
   }
 
-  // ============================================================
-  // TOAST
-  // ============================================================
 
-  let toastTimer = null;
+  /* ============================================================
+     TOAST
+     ============================================================ */
 
-  function showToast(message) {
+  let toastTimer =
+    null;
 
-    if (!minimalToast) return;
+
+  function showToast(
+    message
+  ) {
+
+    if (!minimalToast) {
+      return;
+    }
+
 
     minimalToast.textContent =
       message;
+
 
     minimalToast.classList.add(
       'visible'
     );
 
+
     if (toastTimer) {
-      clearTimeout(toastTimer);
+
+      clearTimeout(
+        toastTimer
+      );
     }
+
 
     toastTimer =
       setTimeout(
@@ -1374,9 +1953,10 @@
       );
   }
 
-  // ============================================================
-  // START
-  // ============================================================
+
+  /* ============================================================
+     START WEBSITE
+     ============================================================ */
 
   if (
     document.readyState ===
@@ -1392,5 +1972,6 @@
 
     init();
   }
+
 
 })();
