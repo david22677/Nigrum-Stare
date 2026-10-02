@@ -18,26 +18,15 @@ const FRAME_EXT = '.jpg';
 
 
 /*
-   FULL ANIMATION SPEED
+   COMPLETE ANIMATION SPEED
 
-   9000ms = 9 seconds for the complete animation.
+   15000ms = 15 seconds for the
+   complete animation.
 
-   The animation will continuously repeat:
-
-   FRAME 001
-      ↓
-   FRAME 083
-      ↓
-   FRAME 001
-      ↓
-   FRAME 083
-      ↓
-   ...
-
-   There is NO pause between loops.
+   001 → 083 → 001 → 083 → forever
 */
 
-const AUTO_PLAY_DURATION = 9000;
+const AUTO_PLAY_DURATION = 15000;
 
 
 /* =========================================================
@@ -90,13 +79,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-01',
-
     name: 'Signature T-Shirt',
-
     price: 140,
-
     image: 'assets/products/t 2.jpg',
-
     sizes: [
       'S',
       'M',
@@ -109,13 +94,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-02',
-
     name: 'Classic Hoodie',
-
     price: 220,
-
     image: 'assets/products/hoodie.jpg',
-
     sizes: [
       'S',
       'M',
@@ -127,13 +108,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-03',
-
     name: 'Sweat Shirt & Shorts Set',
-
     price: 195,
-
     image: 'assets/products/t3.jpg',
-
     sizes: [
       'S',
       'M',
@@ -145,13 +122,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-04',
-
     name: 'Pro Heavyweight Hoodie',
-
     price: 235,
-
     image: 'assets/products/HOODIE3.jpg',
-
     sizes: [
       'M',
       'L',
@@ -163,13 +136,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-05',
-
     name: 'Structured Tactical Cap',
-
     price: 75,
-
     image: 'assets/products/cap.jpg',
-
     sizes: [
       'ONE SIZE'
     ]
@@ -178,13 +147,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-06',
-
     name: 'Wool Fisherman Beanie',
-
     price: 65,
-
     image: 'assets/products/ROYBENS 2 Pack Wool Fisherman Beanies for Men, Knit Short Watch Cap Winter Warm Hats.jpg',
-
     sizes: [
       'ONE SIZE'
     ]
@@ -193,13 +158,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-07',
-
     name: 'Solid Trucker Hat',
-
     price: 70,
-
     image: 'assets/products/Men Solid Trucker Hat.jpg',
-
     sizes: [
       'ONE SIZE'
     ]
@@ -208,13 +169,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-08',
-
     name: 'Tactical Bandana',
-
     price: 45,
-
     image: 'assets/products/1pc Quick Dry Sports Bandana.jpg',
-
     sizes: [
       'ONE SIZE'
     ]
@@ -223,13 +180,9 @@ const PRODUCTS = [
 
   {
     id: 'ns-09',
-
     name: 'Turban Headwrap',
-
     price: 50,
-
     image: 'assets/products/Turban.jpg',
-
     sizes: [
       'ONE SIZE'
     ]
@@ -244,23 +197,21 @@ const PRODUCTS = [
 
 const frameImages = [];
 
-
 let currentFrame = 0;
 
 let targetFrame = 0;
-
 
 let autoPlaying = false;
 
 let autoPlayStarted = false;
 
+let animationStartTime = 0;
 
 let heroContainer = null;
 
 let heroCanvas = null;
 
 let heroCtx = null;
-
 
 let heroTitleBlock = null;
 
@@ -275,7 +226,6 @@ let stageIndicator = null;
 
 const CART_STORAGE_KEY =
   'nigrum_minimal_cart';
-
 
 let cart = [];
 
@@ -304,7 +254,6 @@ document.addEventListener(
   'DOMContentLoaded',
   () => {
 
-
     /* -------------------------------------------------------
        FIND HERO
        ------------------------------------------------------- */
@@ -332,6 +281,7 @@ document.addEventListener(
         document.querySelector(
           'canvas'
         );
+
     }
 
 
@@ -341,6 +291,7 @@ document.addEventListener(
         heroCanvas.getContext(
           '2d'
         );
+
     }
 
 
@@ -424,8 +375,8 @@ document.addEventListener(
 
 
     /*
-       Keep the hero writing visible
-       from the beginning.
+       Keep hero writing visible
+       immediately.
     */
 
     keepHeroTextVisible();
@@ -446,11 +397,11 @@ function setupCanvas() {
   ) {
 
     return;
+
   }
 
 
   const resizeCanvas = () => {
-
 
     const rect =
       heroCanvas.getBoundingClientRect();
@@ -473,33 +424,34 @@ function setupCanvas() {
 
 
     heroCtx.setTransform(
-
       dpr,
-
       0,
-
       0,
-
       dpr,
-
       0,
-
       0
-
     );
 
 
     /*
-       Redraw the current frame
+       Redraw current frame
        after resizing.
     */
 
-    const currentImage =
-      frameImages[
-        Math.round(
-          currentFrame
+    const frameIndex =
+      Math.min(
+        TOTAL_FRAMES - 1,
+        Math.max(
+          0,
+          Math.floor(
+            currentFrame
+          )
         )
-      ];
+      );
+
+
+    const currentImage =
+      frameImages[frameIndex];
 
 
     if (currentImage) {
@@ -530,7 +482,6 @@ function setupCanvas() {
 
 function getFramePath(index) {
 
-
   const frameNumber =
     String(
       index + 1
@@ -541,13 +492,9 @@ function getFramePath(index) {
 
 
   return (
-
     FRAME_PREFIX +
-
     frameNumber +
-
     FRAME_EXT
-
   );
 
 }
@@ -559,10 +506,18 @@ function getFramePath(index) {
 
 function preloadFrames() {
 
+  let loaded = 0;
 
-  let loaded =
-    0;
+  let failed = 0;
 
+
+  /*
+     Do NOT start the animation
+     after only frame 001.
+
+     We wait until the complete
+     animation is available.
+  */
 
   for (
     let i = 0;
@@ -570,16 +525,9 @@ function preloadFrames() {
     i++
   ) {
 
-
     const img =
       new Image();
 
-
-    /*
-       Prevent browser from
-       unnecessarily changing
-       the image.
-    */
 
     img.decoding =
       'async';
@@ -591,31 +539,36 @@ function preloadFrames() {
 
     img.onload = () => {
 
-
       loaded++;
-
 
       frameImages[i] =
         img;
 
 
       /*
-         First frame appears
-         immediately.
+         Show frame 001 immediately
+         when it becomes available.
       */
 
       if (i === 0) {
 
+        currentFrame = 0;
 
-        drawFrame(
-          img
-        );
+        targetFrame = 0;
+
+        drawFrame(img);
+
+      }
 
 
-        /*
-           Start animation immediately
-           after the first frame loads.
-        */
+      /*
+         START ONLY WHEN ALL FRAMES
+         HAVE LOADED.
+      */
+
+      if (
+        loaded === TOTAL_FRAMES
+      ) {
 
         startAutoPlay();
 
@@ -626,14 +579,32 @@ function preloadFrames() {
 
     img.onerror = () => {
 
+      failed++;
+
 
       console.warn(
-
         'Could not load frame:',
-
         getFramePath(i)
-
       );
+
+
+      /*
+         If one or more frames fail,
+         don't leave the animation
+         permanently frozen.
+
+         Start once everything that
+         can load has finished.
+      */
+
+      if (
+        loaded + failed ===
+        TOTAL_FRAMES
+      ) {
+
+        startAutoPlay();
+
+      }
 
     };
 
@@ -648,15 +619,10 @@ function preloadFrames() {
 
 function drawFrame(img) {
 
-
   if (
-
     !img ||
-
     !heroCanvas ||
-
     !heroCtx
-
   ) {
 
     return;
@@ -673,11 +639,8 @@ function drawFrame(img) {
 
 
   if (
-
     !canvasWidth ||
-
     !canvasHeight
-
   ) {
 
     return;
@@ -690,34 +653,25 @@ function drawFrame(img) {
   */
 
   heroCtx.clearRect(
-
     0,
-
     0,
-
     canvasWidth,
-
     canvasHeight
-
   );
 
 
   /*
-     Keep the original
+     Keep original image
      aspect ratio.
   */
 
   const imageRatio =
-
     img.naturalWidth /
-
     img.naturalHeight;
 
 
   const canvasRatio =
-
     canvasWidth /
-
     canvasHeight;
 
 
@@ -730,7 +684,6 @@ function drawFrame(img) {
     imageRatio > canvasRatio
   ) {
 
-
     drawHeight =
       canvasHeight;
 
@@ -739,9 +692,7 @@ function drawFrame(img) {
       drawHeight *
       imageRatio;
 
-
   } else {
-
 
     drawWidth =
       canvasWidth;
@@ -755,7 +706,6 @@ function drawFrame(img) {
 
 
   const x =
-
     (
       canvasWidth -
       drawWidth
@@ -763,7 +713,6 @@ function drawFrame(img) {
 
 
   const y =
-
     (
       canvasHeight -
       drawHeight
@@ -771,17 +720,11 @@ function drawFrame(img) {
 
 
   heroCtx.drawImage(
-
     img,
-
     x,
-
     y,
-
     drawWidth,
-
     drawHeight
-
   );
 
 }
@@ -793,13 +736,21 @@ function drawFrame(img) {
 
 function startAutoPlay() {
 
-
   /*
-     Prevent the animation from
-     accidentally starting twice.
+     Prevent duplicate animation
+     loops.
   */
 
   if (autoPlayStarted) {
+
+    return;
+
+  }
+
+
+  if (
+    frameImages.length === 0
+  ) {
 
     return;
 
@@ -814,22 +765,19 @@ function startAutoPlay() {
     true;
 
 
-  /*
-     IMPORTANT:
-
-     This starting point NEVER resets
-     when the animation reaches the end.
-
-     The modulo calculation below
-     creates a seamless continuous loop.
-  */
-
-  const startTime =
+  animationStartTime =
     performance.now();
 
 
-  function animate(now) {
+  /*
+     Make absolutely sure
+     the writing is visible.
+  */
 
+  keepHeroTextVisible();
+
+
+  function animate(now) {
 
     if (!autoPlaying) {
 
@@ -839,58 +787,81 @@ function startAutoPlay() {
 
 
     /*
-       Calculate where we are
-       inside the current loop.
+       Calculate the exact position
+       inside the 15-second loop.
 
-       When elapsed reaches 9000ms:
-
-       9000 % 9000 = 0
-
-       So the next frame starts
-       immediately from frame 1.
-
-       NO DELAY.
+       % creates the continuous loop.
     */
 
     const elapsed =
-
       (
         now -
-        startTime
+        animationStartTime
       ) %
       AUTO_PLAY_DURATION;
 
 
     const progress =
-
       elapsed /
       AUTO_PLAY_DURATION;
 
 
     /*
-       Direct linear frame movement.
+       Convert progress into
+       frame number.
 
-       This prevents the animation
-       from slowing down at the end
-       before restarting.
-
-       Therefore:
-
-       001 → 002 → 003 → ... → 083
-       → 001 → 002 → 003 → ...
-
-       continuously.
+       0.00 = frame 001
+       0.50 = middle
+       0.99 = frame 083
+       1.00 = back to frame 001
     */
 
     targetFrame =
-
       progress *
       (TOTAL_FRAMES - 1);
 
 
     /*
-       Keep ALL hero writing
-       permanently visible.
+       IMPORTANT:
+
+       We DO NOT use LERP here.
+
+       The old LERP system was causing:
+
+       083 → 082 → 081 → ...
+       instead of:
+
+       083 → 001
+
+       This direct frame selection
+       makes the loop behave like
+       a real video.
+    */
+
+    currentFrame =
+      targetFrame;
+
+
+    const frameIndex =
+      Math.floor(
+        currentFrame
+      );
+
+
+    const frame =
+      frameImages[frameIndex];
+
+
+    if (frame) {
+
+      drawFrame(frame);
+
+    }
+
+
+    /*
+       Keep writing visible
+       on every animation frame.
     */
 
     keepHeroTextVisible();
@@ -920,18 +891,16 @@ function startAutoPlay() {
 
 
 /* =========================================================
-   HERO TEXT — ALWAYS VISIBLE
+   HERO TEXT — PERMANENTLY VISIBLE
    ========================================================= */
 
 function keepHeroTextVisible() {
-
 
   /*
      MAIN HERO WRITING
   */
 
   if (heroTitleBlock) {
-
 
     heroTitleBlock.style.opacity =
       '1';
@@ -946,12 +915,16 @@ function keepHeroTextVisible() {
 
 
     /*
-       Do NOT allow JavaScript
-       to move the writing away.
+       Do not allow the old
+       scroll animation to move it.
     */
 
     heroTitleBlock.style.transform =
       'translate(-50%, -50%)';
+
+
+    heroTitleBlock.style.pointerEvents =
+      'auto';
 
   }
 
@@ -961,7 +934,6 @@ function keepHeroTextVisible() {
   */
 
   if (heroScrollHint) {
-
 
     heroScrollHint.style.opacity =
       '1';
@@ -987,7 +959,6 @@ function updateStageIndicator(
   progress
 ) {
 
-
   if (!stageIndicator) {
 
     return;
@@ -1001,12 +972,9 @@ function updateStageIndicator(
 
 
   const frameIdx =
-
-    Math.round(
-
+    Math.floor(
       progress *
       (TOTAL_FRAMES - 1)
-
     );
 
 
@@ -1020,21 +988,16 @@ function updateStageIndicator(
     s++
   ) {
 
-
     if (
-
       frameIdx >=
       STAGES[s].range[0] &&
 
       frameIdx <=
       STAGES[s].range[1]
-
     ) {
-
 
       matchedStage =
         STAGES[s].name;
-
 
       break;
 
@@ -1044,12 +1007,9 @@ function updateStageIndicator(
 
 
   if (
-
     stageIndicator.textContent !==
     matchedStage
-
   ) {
-
 
     stageIndicator.textContent =
       matchedStage;
@@ -1060,88 +1020,21 @@ function updateStageIndicator(
 
 
 /* =========================================================
-   FRAME RENDER LOOP
+   OLD RENDER LOOP REMOVED
    ========================================================= */
 
-function render() {
-
-
-  /*
-     Smooth movement toward
-     the target frame.
-
-     This keeps the animation
-     visually smooth.
-  */
-
-  currentFrame +=
-
-    (
-      targetFrame -
-      currentFrame
-    ) *
-    0.18;
-
-
-  /*
-     Make sure the frame number
-     stays inside the valid range.
-  */
-
-  if (
-    currentFrame < 0
-  ) {
-
-    currentFrame = 0;
-
-  }
-
-
-  if (
-    currentFrame >
-    TOTAL_FRAMES - 1
-  ) {
-
-    currentFrame =
-      TOTAL_FRAMES - 1;
-
-  }
-
-
-  const frameIndex =
-
-    Math.round(
-      currentFrame
-    );
-
-
-  const frame =
-    frameImages[frameIndex];
-
-
-  if (frame) {
-
-    drawFrame(
-      frame
-    );
-
-  }
-
-
-  requestAnimationFrame(
-    render
-  );
-
-}
-
-
 /*
-   Start the visual renderer.
-*/
+   IMPORTANT:
 
-requestAnimationFrame(
-  render
-);
+   There is intentionally NO separate
+   render() loop anymore.
+
+   The animation itself draws the
+   correct frame directly.
+
+   This prevents the 083 → 001
+   transition from reversing.
+*/
 
 
 /* =========================================================
@@ -1149,10 +1042,8 @@ requestAnimationFrame(
    ========================================================= */
 
 /*
-   IMPORTANT:
-
    SCROLL DOES NOT CONTROL
-   THE VIDEO.
+   THE ANIMATION.
 
    The animation continues playing
    regardless of scrolling.
@@ -1163,20 +1054,17 @@ requestAnimationFrame(
 
 function setupScrollListener() {
 
-
   window.addEventListener(
-
     'scroll',
 
     () => {
 
-
       /*
-         Keep writing permanently visible.
+         Make sure the hero writing
+         never disappears.
       */
 
       keepHeroTextVisible();
-
 
     },
 
@@ -1195,9 +1083,7 @@ function setupScrollListener() {
 
 function setupNavigation() {
 
-
   const navLinks =
-
     document.querySelectorAll(
       'a[href^="#"]'
     );
@@ -1206,13 +1092,10 @@ function setupNavigation() {
   navLinks.forEach(
     link => {
 
-
       link.addEventListener(
-
         'click',
 
         event => {
-
 
           const href =
             link.getAttribute(
@@ -1221,11 +1104,8 @@ function setupNavigation() {
 
 
           if (
-
             !href ||
-
             href === '#'
-
           ) {
 
             return;
@@ -1234,7 +1114,6 @@ function setupNavigation() {
 
 
           const target =
-
             document.querySelector(
               href
             );
@@ -1251,13 +1130,8 @@ function setupNavigation() {
 
 
           target.scrollIntoView({
-
-            behavior:
-              'smooth',
-
-            block:
-              'start'
-
+            behavior: 'smooth',
+            block: 'start'
           });
 
         }
@@ -1265,6 +1139,7 @@ function setupNavigation() {
       );
 
     }
+
   );
 
 }
@@ -1276,9 +1151,7 @@ function setupNavigation() {
 
 function setupCollection() {
 
-
   const collection =
-
     document.querySelector(
       '#collection'
     );
@@ -1292,7 +1165,6 @@ function setupCollection() {
 
 
   const productGrid =
-
     collection.querySelector(
       '.product-grid'
     );
@@ -1317,9 +1189,7 @@ function setupCollection() {
   PRODUCTS.forEach(
     product => {
 
-
       const card =
-
         createProductCard(
           product
         );
@@ -1330,6 +1200,7 @@ function setupCollection() {
       );
 
     }
+
   );
 
 }
@@ -1343,9 +1214,7 @@ function createProductCard(
   product
 ) {
 
-
   const card =
-
     document.createElement(
       'article'
     );
@@ -1400,7 +1269,6 @@ function createProductCard(
 
 
   const button =
-
     card.querySelector(
       '.product-image-button'
     );
@@ -1408,9 +1276,7 @@ function createProductCard(
 
   if (button) {
 
-
     button.addEventListener(
-
       'click',
 
       () => {
@@ -1441,9 +1307,7 @@ let productModal =
 
 function setupProductModal() {
 
-
   productModal =
-
     document.querySelector(
       '#product-modal'
     );
@@ -1457,7 +1321,6 @@ function setupProductModal() {
 
 
   const closeButtons =
-
     productModal.querySelectorAll(
       '[data-close-modal]'
     );
@@ -1466,31 +1329,25 @@ function setupProductModal() {
   closeButtons.forEach(
     button => {
 
-
       button.addEventListener(
-
         'click',
-
         closeProductModal
-
       );
 
     }
+
   );
 
 
   productModal.addEventListener(
-
     'click',
 
     event => {
-
 
       if (
         event.target ===
         productModal
       ) {
-
 
         closeProductModal();
 
@@ -1502,17 +1359,14 @@ function setupProductModal() {
 
 
   document.addEventListener(
-
     'keydown',
 
     event => {
-
 
       if (
         event.key ===
         'Escape'
       ) {
-
 
         closeProductModal();
 
@@ -1533,15 +1387,11 @@ function openProductModal(
   productId
 ) {
 
-
   const product =
-
     PRODUCTS.find(
-
       item =>
         item.id ===
         productId
-
     );
 
 
@@ -1556,35 +1406,30 @@ function openProductModal(
 
 
   const image =
-
     productModal.querySelector(
       '[data-product-image]'
     );
 
 
   const name =
-
     productModal.querySelector(
       '[data-product-name]'
     );
 
 
   const price =
-
     productModal.querySelector(
       '[data-product-price]'
     );
 
 
   const description =
-
     productModal.querySelector(
       '[data-product-description]'
     );
 
 
   const sizeContainer =
-
     productModal.querySelector(
       '[data-product-sizes]'
     );
@@ -1592,10 +1437,8 @@ function openProductModal(
 
   if (image) {
 
-
     image.src =
       product.image;
-
 
     image.alt =
       product.name;
@@ -1605,7 +1448,6 @@ function openProductModal(
 
   if (name) {
 
-
     name.textContent =
       product.name;
 
@@ -1613,7 +1455,6 @@ function openProductModal(
 
 
   if (price) {
-
 
     price.textContent =
       `$${product.price}`;
@@ -1623,7 +1464,6 @@ function openProductModal(
 
   if (description) {
 
-
     description.textContent =
       'A considered Nigrum Stare piece shaped by precision, individuality and edge.';
 
@@ -1632,18 +1472,14 @@ function openProductModal(
 
   if (sizeContainer) {
 
-
     sizeContainer.innerHTML =
       '';
 
 
     product.sizes.forEach(
-
       size => {
 
-
         const button =
-
           document.createElement(
             'button'
           );
@@ -1666,24 +1502,19 @@ function openProductModal(
 
 
         button.addEventListener(
-
           'click',
 
           () => {
-
 
             sizeContainer
               .querySelectorAll(
                 '.size-option'
               )
               .forEach(
-
                 item =>
-
                   item.classList.remove(
                     'selected'
                   )
-
               );
 
 
@@ -1708,7 +1539,6 @@ function openProductModal(
 
 
   const addButton =
-
     productModal.querySelector(
       '[data-add-to-cart]'
     );
@@ -1716,27 +1546,19 @@ function openProductModal(
 
   if (addButton) {
 
-
     addButton.onclick = () => {
 
-
       const selectedSize =
-
         sizeContainer
-
           ? sizeContainer.querySelector(
               '.size-option.selected'
             )
-
           : null;
 
 
       const size =
-
         selectedSize
-
           ? selectedSize.dataset.size
-
           : product.sizes[0];
 
 
@@ -1771,7 +1593,6 @@ function openProductModal(
 
 function closeProductModal() {
 
-
   if (!productModal) {
 
     return;
@@ -1797,23 +1618,19 @@ function closeProductModal() {
 
 function setupCart() {
 
-
   const cartButton =
-
     document.querySelector(
       '[data-cart]'
     );
 
 
   const cartClose =
-
     document.querySelector(
       '[data-close-cart]'
     );
 
 
   if (cartButton) {
-
 
     cartButton.addEventListener(
       'click',
@@ -1825,7 +1642,6 @@ function setupCart() {
 
   if (cartClose) {
 
-
     cartClose.addEventListener(
       'click',
       closeCart
@@ -1835,14 +1651,12 @@ function setupCart() {
 
 
   const checkoutButton =
-
     document.querySelector(
       '[data-checkout]'
     );
 
 
   if (checkoutButton) {
-
 
     checkoutButton.addEventListener(
       'click',
@@ -1853,7 +1667,6 @@ function setupCart() {
 
 
   const cartDrawer =
-
     document.querySelector(
       '#cart-drawer'
     );
@@ -1861,19 +1674,15 @@ function setupCart() {
 
   if (cartDrawer) {
 
-
     cartDrawer.addEventListener(
-
       'click',
 
       event => {
-
 
         if (
           event.target ===
           cartDrawer
         ) {
-
 
           closeCart();
 
@@ -1897,31 +1706,23 @@ function addToCart(
   size
 ) {
 
-
   const existing =
-
     cart.find(
-
       item =>
-
         item.id ===
         product.id &&
 
         item.size ===
         size
-
     );
 
 
   if (existing) {
 
-
     existing.quantity +=
       1;
 
-
   } else {
-
 
     cart.push({
 
@@ -1950,7 +1751,6 @@ function addToCart(
 
   saveCart();
 
-
   updateCartUI();
 
 
@@ -1967,30 +1767,18 @@ function addToCart(
 
 function saveCart() {
 
-
   try {
 
-
     localStorage.setItem(
-
       CART_STORAGE_KEY,
-
-      JSON.stringify(
-        cart
-      )
-
+      JSON.stringify(cart)
     );
-
 
   } catch (error) {
 
-
     console.warn(
-
       'Could not save cart:',
-
       error
-
     );
 
   }
@@ -2004,46 +1792,35 @@ function saveCart() {
 
 function updateCartUI() {
 
-
   const cartItems =
-
     document.querySelector(
       '[data-cart-items]'
     );
 
 
   const cartCount =
-
     document.querySelectorAll(
       '[data-cart-count]'
     );
 
 
   const cartTotal =
-
     document.querySelector(
       '[data-cart-total]'
     );
 
 
   const totalQuantity =
-
     cart.reduce(
-
       (total, item) =>
-
         total +
         item.quantity,
-
       0
-
     );
 
 
   cartCount.forEach(
-
     element => {
-
 
       element.textContent =
         totalQuantity;
@@ -2055,13 +1832,11 @@ function updateCartUI() {
 
   if (cartItems) {
 
-
     cartItems.innerHTML =
       '';
 
 
     if (cart.length === 0) {
-
 
       cartItems.innerHTML = `
 
@@ -2071,17 +1846,12 @@ function updateCartUI() {
 
       `;
 
-
     } else {
 
-
       cart.forEach(
-
         item => {
 
-
           const cartItem =
-
             document.createElement(
               'div'
             );
@@ -2167,21 +1937,15 @@ function updateCartUI() {
 
   if (cartTotal) {
 
-
     const total =
-
       cart.reduce(
-
         (sum, item) =>
-
           sum +
           (
             item.price *
             item.quantity
           ),
-
         0
-
       );
 
 
@@ -2199,33 +1963,22 @@ function updateCartUI() {
 
 function setupCartItemButtons() {
 
-
   document
-
     .querySelectorAll(
       '[data-cart-plus]'
     )
-
     .forEach(
-
       button => {
 
-
         button.addEventListener(
-
           'click',
 
           () => {
 
-
             changeCartQuantity(
-
               button.dataset.cartPlus,
-
               button.dataset.cartSize,
-
               1
-
             );
 
           }
@@ -2238,31 +1991,21 @@ function setupCartItemButtons() {
 
 
   document
-
     .querySelectorAll(
       '[data-cart-minus]'
     )
-
     .forEach(
-
       button => {
 
-
         button.addEventListener(
-
           'click',
 
           () => {
 
-
             changeCartQuantity(
-
               button.dataset.cartMinus,
-
               button.dataset.cartSize,
-
               -1
-
             );
 
           }
@@ -2275,29 +2018,20 @@ function setupCartItemButtons() {
 
 
   document
-
     .querySelectorAll(
       '[data-cart-remove]'
     )
-
     .forEach(
-
       button => {
 
-
         button.addEventListener(
-
           'click',
 
           () => {
 
-
             removeFromCart(
-
               button.dataset.cartRemove,
-
               button.dataset.cartSize
-
             );
 
           }
@@ -2321,19 +2055,14 @@ function changeCartQuantity(
   change
 ) {
 
-
   const item =
-
     cart.find(
-
       cartItem =>
-
         cartItem.id ===
         productId &&
 
         cartItem.size ===
         size
-
     );
 
 
@@ -2352,13 +2081,9 @@ function changeCartQuantity(
     item.quantity <= 0
   ) {
 
-
     cart =
-
       cart.filter(
-
         cartItem =>
-
           !(
             cartItem.id ===
             productId &&
@@ -2366,14 +2091,12 @@ function changeCartQuantity(
             cartItem.size ===
             size
           )
-
       );
 
   }
 
 
   saveCart();
-
 
   updateCartUI();
 
@@ -2389,13 +2112,9 @@ function removeFromCart(
   size
 ) {
 
-
   cart =
-
     cart.filter(
-
       item =>
-
         !(
           item.id ===
           productId &&
@@ -2403,12 +2122,10 @@ function removeFromCart(
           item.size ===
           size
         )
-
     );
 
 
   saveCart();
-
 
   updateCartUI();
 
@@ -2421,9 +2138,7 @@ function removeFromCart(
 
 function openCart() {
 
-
   const cartDrawer =
-
     document.querySelector(
       '#cart-drawer'
     );
@@ -2454,9 +2169,7 @@ function openCart() {
 
 function closeCart() {
 
-
   const cartDrawer =
-
     document.querySelector(
       '#cart-drawer'
     );
@@ -2487,9 +2200,9 @@ function closeCart() {
 
 function checkout() {
 
-
-  if (cart.length === 0) {
-
+  if (
+    cart.length === 0
+  ) {
 
     showToast(
       'Your cart is empty'
@@ -2517,23 +2230,18 @@ function checkout() {
 
 function setupIntersectionObserver() {
 
-
   const elements =
-
     document.querySelectorAll(
       '[data-reveal]'
     );
 
 
   if (
-
     !elements.length ||
-
     !(
       'IntersectionObserver'
       in window
     )
-
   ) {
 
     return;
@@ -2542,21 +2250,16 @@ function setupIntersectionObserver() {
 
 
   const observer =
-
     new IntersectionObserver(
 
       entries => {
 
-
         entries.forEach(
-
           entry => {
-
 
             if (
               entry.isIntersecting
             ) {
-
 
               entry.target.classList.add(
                 'is-visible'
@@ -2583,13 +2286,10 @@ function setupIntersectionObserver() {
 
 
   elements.forEach(
-
     element =>
-
       observer.observe(
         element
       )
-
   );
 
 }
@@ -2600,14 +2300,11 @@ function setupIntersectionObserver() {
    ========================================================= */
 
 document.addEventListener(
-
   'click',
 
   event => {
 
-
     const link =
-
       event.target.closest(
         'a[href^="#"]'
       );
@@ -2621,18 +2318,14 @@ document.addEventListener(
 
 
     const href =
-
       link.getAttribute(
         'href'
       );
 
 
     if (
-
       !href ||
-
       href === '#'
-
     ) {
 
       return;
@@ -2641,7 +2334,6 @@ document.addEventListener(
 
 
     const target =
-
       document.querySelector(
         href
       );
@@ -2658,13 +2350,8 @@ document.addEventListener(
 
 
     target.scrollIntoView({
-
-      behavior:
-        'smooth',
-
-      block:
-        'start'
-
+      behavior: 'smooth',
+      block: 'start'
     });
 
   }
@@ -2680,16 +2367,13 @@ function showToast(
   message
 ) {
 
-
   let toast =
-
     document.querySelector(
       '.ns-toast'
     );
 
 
   if (!toast) {
-
 
     toast =
       document.createElement(
@@ -2723,21 +2407,15 @@ function showToast(
 
 
   toast._timeout =
-
     setTimeout(
-
       () => {
-
 
         toast.classList.remove(
           'show'
         );
 
-
       },
-
       2500
-
     );
 
 }
@@ -2748,28 +2426,25 @@ function showToast(
    ========================================================= */
 
 window.addEventListener(
-
   'load',
 
   () => {
 
-
     /*
-       Keep hero text visible.
+       Keep hero writing visible.
     */
 
     keepHeroTextVisible();
 
 
     /*
-       If frames haven't started loading,
-       start loading them again.
+       If the frames have not started
+       loading for some reason, try again.
     */
 
     if (
       frameImages.length === 0
     ) {
-
 
       preloadFrames();
 
