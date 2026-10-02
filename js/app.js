@@ -11,20 +11,33 @@
    ========================================================= */
 
 const TOTAL_FRAMES = 83;
+
 const FRAME_PREFIX = 'frames/ezgif-frame-';
+
 const FRAME_EXT = '.jpg';
 
+
 /*
-   Animation speed
+   FULL ANIMATION SPEED
 
-   6500ms = 6.5 seconds for the full animation.
-   Increase this number if you want it slower.
+   9000ms = 9 seconds for the complete animation.
 
-   Example:
-   8000 = 8 seconds
-   10000 = 10 seconds
+   The animation will continuously repeat:
+
+   FRAME 001
+      ↓
+   FRAME 083
+      ↓
+   FRAME 001
+      ↓
+   FRAME 083
+      ↓
+   ...
+
+   There is NO pause between loops.
 */
-const AUTO_PLAY_DURATION = 6500;
+
+const AUTO_PLAY_DURATION = 9000;
 
 
 /* =========================================================
@@ -32,13 +45,40 @@ const AUTO_PLAY_DURATION = 6500;
    ========================================================= */
 
 const STAGES = [
-  { name: '01 / THREAD', range: [0, 13] },
-  { name: '02 / FABRIC', range: [14, 29] },
-  { name: '03 / CUT',    range: [30, 41] },
-  { name: '04 / SEW',    range: [42, 55] },
-  { name: '05 / FINISH', range: [56, 65] },
-  { name: '06 / FORM',   range: [66, 74] },
-  { name: '07 / NIGRUM STARE', range: [75, 82] }
+  {
+    name: '01 / THREAD',
+    range: [0, 13]
+  },
+
+  {
+    name: '02 / FABRIC',
+    range: [14, 29]
+  },
+
+  {
+    name: '03 / CUT',
+    range: [30, 41]
+  },
+
+  {
+    name: '04 / SEW',
+    range: [42, 55]
+  },
+
+  {
+    name: '05 / FINISH',
+    range: [56, 65]
+  },
+
+  {
+    name: '06 / FORM',
+    range: [66, 74]
+  },
+
+  {
+    name: '07 / NIGRUM STARE',
+    range: [75, 82]
+  }
 ];
 
 
@@ -47,77 +87,154 @@ const STAGES = [
    ========================================================= */
 
 const PRODUCTS = [
+
   {
     id: 'ns-01',
+
     name: 'Signature T-Shirt',
+
     price: 140,
+
     image: 'assets/products/t 2.jpg',
-    sizes: ['S', 'M', 'L', 'XL', 'OVERSIZED']
+
+    sizes: [
+      'S',
+      'M',
+      'L',
+      'XL',
+      'OVERSIZED'
+    ]
   },
+
 
   {
     id: 'ns-02',
+
     name: 'Classic Hoodie',
+
     price: 220,
+
     image: 'assets/products/hoodie.jpg',
-    sizes: ['S', 'M', 'L', 'XL']
+
+    sizes: [
+      'S',
+      'M',
+      'L',
+      'XL'
+    ]
   },
+
 
   {
     id: 'ns-03',
+
     name: 'Sweat Shirt & Shorts Set',
+
     price: 195,
+
     image: 'assets/products/t3.jpg',
-    sizes: ['S', 'M', 'L', 'XL']
+
+    sizes: [
+      'S',
+      'M',
+      'L',
+      'XL'
+    ]
   },
+
 
   {
     id: 'ns-04',
+
     name: 'Pro Heavyweight Hoodie',
+
     price: 235,
+
     image: 'assets/products/HOODIE3.jpg',
-    sizes: ['M', 'L', 'XL', 'OVERSIZED']
+
+    sizes: [
+      'M',
+      'L',
+      'XL',
+      'OVERSIZED'
+    ]
   },
+
 
   {
     id: 'ns-05',
+
     name: 'Structured Tactical Cap',
+
     price: 75,
+
     image: 'assets/products/cap.jpg',
-    sizes: ['ONE SIZE']
+
+    sizes: [
+      'ONE SIZE'
+    ]
   },
+
 
   {
     id: 'ns-06',
+
     name: 'Wool Fisherman Beanie',
+
     price: 65,
+
     image: 'assets/products/ROYBENS 2 Pack Wool Fisherman Beanies for Men, Knit Short Watch Cap Winter Warm Hats.jpg',
-    sizes: ['ONE SIZE']
+
+    sizes: [
+      'ONE SIZE'
+    ]
   },
+
 
   {
     id: 'ns-07',
+
     name: 'Solid Trucker Hat',
+
     price: 70,
+
     image: 'assets/products/Men Solid Trucker Hat.jpg',
-    sizes: ['ONE SIZE']
+
+    sizes: [
+      'ONE SIZE'
+    ]
   },
+
 
   {
     id: 'ns-08',
+
     name: 'Tactical Bandana',
+
     price: 45,
+
     image: 'assets/products/1pc Quick Dry Sports Bandana.jpg',
-    sizes: ['ONE SIZE']
+
+    sizes: [
+      'ONE SIZE'
+    ]
   },
+
 
   {
     id: 'ns-09',
+
     name: 'Turban Headwrap',
+
     price: 50,
+
     image: 'assets/products/Turban.jpg',
-    sizes: ['ONE SIZE']
+
+    sizes: [
+      'ONE SIZE'
+    ]
   }
+
 ];
 
 
@@ -127,18 +244,28 @@ const PRODUCTS = [
 
 const frameImages = [];
 
+
 let currentFrame = 0;
+
 let targetFrame = 0;
 
+
 let autoPlaying = false;
+
 let autoPlayStarted = false;
 
+
 let heroContainer = null;
+
 let heroCanvas = null;
+
 let heroCtx = null;
 
+
 let heroTitleBlock = null;
+
 let heroScrollHint = null;
+
 let stageIndicator = null;
 
 
@@ -146,16 +273,26 @@ let stageIndicator = null;
    CART
    ========================================================= */
 
-const CART_STORAGE_KEY = 'nigrum_minimal_cart';
+const CART_STORAGE_KEY =
+  'nigrum_minimal_cart';
+
 
 let cart = [];
 
+
 try {
-  cart = JSON.parse(
-    localStorage.getItem(CART_STORAGE_KEY)
-  ) || [];
+
+  cart =
+    JSON.parse(
+      localStorage.getItem(
+        CART_STORAGE_KEY
+      )
+    ) || [];
+
 } catch (error) {
+
   cart = [];
+
 }
 
 
@@ -163,63 +300,138 @@ try {
    DOM READY
    ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener(
+  'DOMContentLoaded',
+  () => {
 
-  heroContainer = document.querySelector('.hero-scroll');
 
-  heroCanvas = document.querySelector('#hero-canvas');
+    /* -------------------------------------------------------
+       FIND HERO
+       ------------------------------------------------------- */
 
-  if (!heroCanvas) {
-    heroCanvas = document.querySelector('canvas');
+    heroContainer =
+      document.querySelector(
+        '.hero-scroll'
+      );
+
+
+    heroCanvas =
+      document.querySelector(
+        '#hero-canvas'
+      );
+
+
+    /*
+       Backup in case the canvas
+       does not have the ID.
+    */
+
+    if (!heroCanvas) {
+
+      heroCanvas =
+        document.querySelector(
+          'canvas'
+        );
+    }
+
+
+    if (heroCanvas) {
+
+      heroCtx =
+        heroCanvas.getContext(
+          '2d'
+        );
+    }
+
+
+    /* -------------------------------------------------------
+       HERO TEXT
+       ------------------------------------------------------- */
+
+    heroTitleBlock =
+
+      document.querySelector(
+        '.hero-title'
+      ) ||
+
+      document.querySelector(
+        '.hero-copy'
+      ) ||
+
+      document.querySelector(
+        '.hero-content'
+      );
+
+
+    heroScrollHint =
+
+      document.querySelector(
+        '.hero-scroll-hint'
+      ) ||
+
+      document.querySelector(
+        '.scroll-hint'
+      );
+
+
+    stageIndicator =
+
+      document.querySelector(
+        '.stage-indicator'
+      ) ||
+
+      document.querySelector(
+        '[data-stage]'
+      );
+
+
+    /* -------------------------------------------------------
+       HERO HEIGHT
+       ------------------------------------------------------- */
+
+    if (heroContainer) {
+
+      heroContainer.style.height =
+        '100vh';
+
+      heroContainer.style.minHeight =
+        '100vh';
+
+    }
+
+
+    /* -------------------------------------------------------
+       INITIAL SETUP
+       ------------------------------------------------------- */
+
+    setupCanvas();
+
+    setupScrollListener();
+
+    preloadFrames();
+
+    setupNavigation();
+
+    setupCollection();
+
+    setupProductModal();
+
+    setupCart();
+
+    setupIntersectionObserver();
+
+    updateCartUI();
+
+
+    /*
+       Keep the hero writing visible
+       from the beginning.
+    */
+
+    keepHeroTextVisible();
+
   }
-
-  if (heroCanvas) {
-    heroCtx = heroCanvas.getContext('2d');
-  }
-
-  heroTitleBlock =
-    document.querySelector('.hero-title') ||
-    document.querySelector('.hero-copy') ||
-    document.querySelector('.hero-content');
-
-  heroScrollHint =
-    document.querySelector('.hero-scroll-hint') ||
-    document.querySelector('.scroll-hint');
-
-  stageIndicator =
-    document.querySelector('.stage-indicator') ||
-    document.querySelector('[data-stage]');
-
-
-  /* -------------------------------------------------------
-     HERO IS ONE SCREEN HIGH
-     ------------------------------------------------------- */
-
-  if (heroContainer) {
-    heroContainer.style.height = '100vh';
-    heroContainer.style.minHeight = '100vh';
-  }
-
-
-  /* -------------------------------------------------------
-     INITIAL SETUP
-     ------------------------------------------------------- */
-
-  setupCanvas();
-  setupScrollListener();
-
-  preloadFrames();
-
-  setupNavigation();
-  setupCollection();
-  setupProductModal();
-  setupCart();
-
-  setupIntersectionObserver();
-
-  updateCartUI();
-
-});
+);
 
 
 /* =========================================================
@@ -228,36 +440,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function setupCanvas() {
 
-  if (!heroCanvas || !heroCtx) {
+  if (
+    !heroCanvas ||
+    !heroCtx
+  ) {
+
     return;
   }
 
+
   const resizeCanvas = () => {
+
 
     const rect =
       heroCanvas.getBoundingClientRect();
 
+
     const dpr =
       window.devicePixelRatio || 1;
 
+
     heroCanvas.width =
-      Math.floor(rect.width * dpr);
+      Math.floor(
+        rect.width * dpr
+      );
+
 
     heroCanvas.height =
-      Math.floor(rect.height * dpr);
+      Math.floor(
+        rect.height * dpr
+      );
+
 
     heroCtx.setTransform(
+
       dpr,
+
       0,
+
       0,
+
       dpr,
+
       0,
+
       0
+
     );
 
-    if (frameImages[0]) {
-      drawFrame(frameImages[0]);
+
+    /*
+       Redraw the current frame
+       after resizing.
+    */
+
+    const currentImage =
+      frameImages[
+        Math.round(
+          currentFrame
+        )
+      ];
+
+
+    if (currentImage) {
+
+      drawFrame(
+        currentImage
+      );
+
     }
+
   };
 
 
@@ -266,30 +518,51 @@ function setupCanvas() {
     resizeCanvas
   );
 
+
   resizeCanvas();
+
 }
 
 
 /* =========================================================
-   FRAME LOADING
+   FRAME PATH
    ========================================================= */
 
 function getFramePath(index) {
 
+
   const frameNumber =
-    String(index + 1).padStart(3, '0');
+    String(
+      index + 1
+    ).padStart(
+      3,
+      '0'
+    );
+
 
   return (
+
     FRAME_PREFIX +
+
     frameNumber +
+
     FRAME_EXT
+
   );
+
 }
 
 
+/* =========================================================
+   PRELOAD ALL FRAMES
+   ========================================================= */
+
 function preloadFrames() {
 
-  let loaded = 0;
+
+  let loaded =
+    0;
+
 
   for (
     let i = 0;
@@ -297,42 +570,75 @@ function preloadFrames() {
     i++
   ) {
 
-    const img = new Image();
 
-    img.src = getFramePath(i);
+    const img =
+      new Image();
+
+
+    /*
+       Prevent browser from
+       unnecessarily changing
+       the image.
+    */
+
+    img.decoding =
+      'async';
+
+
+    img.src =
+      getFramePath(i);
+
 
     img.onload = () => {
 
+
       loaded++;
 
-      frameImages[i] = img;
+
+      frameImages[i] =
+        img;
+
 
       /*
-         Show the first frame immediately.
+         First frame appears
+         immediately.
       */
 
       if (i === 0) {
 
-        drawFrame(img);
+
+        drawFrame(
+          img
+        );
+
 
         /*
-           Start the automatic animation
-           after the first frame is ready.
+           Start animation immediately
+           after the first frame loads.
         */
 
         startAutoPlay();
+
       }
+
     };
 
 
     img.onerror = () => {
 
+
       console.warn(
+
         'Could not load frame:',
+
         getFramePath(i)
+
       );
+
     };
+
   }
+
 }
 
 
@@ -342,107 +648,181 @@ function preloadFrames() {
 
 function drawFrame(img) {
 
+
   if (
+
     !img ||
+
     !heroCanvas ||
+
     !heroCtx
+
   ) {
+
     return;
+
   }
+
 
   const canvasWidth =
     heroCanvas.clientWidth;
+
 
   const canvasHeight =
     heroCanvas.clientHeight;
 
 
   if (
+
     !canvasWidth ||
+
     !canvasHeight
+
   ) {
+
     return;
+
   }
 
 
   /*
-     Clear canvas.
+     Clear previous frame.
   */
 
   heroCtx.clearRect(
+
     0,
+
     0,
+
     canvasWidth,
+
     canvasHeight
+
   );
 
 
   /*
-     Cover-style image scaling.
-
-     This keeps the frame filling the
-     entire hero without stretching it.
+     Keep the original
+     aspect ratio.
   */
 
   const imageRatio =
+
     img.naturalWidth /
+
     img.naturalHeight;
 
+
   const canvasRatio =
+
     canvasWidth /
+
     canvasHeight;
 
+
   let drawWidth;
+
   let drawHeight;
 
-  if (imageRatio > canvasRatio) {
+
+  if (
+    imageRatio > canvasRatio
+  ) {
+
 
     drawHeight =
       canvasHeight;
 
+
     drawWidth =
-      drawHeight * imageRatio;
+      drawHeight *
+      imageRatio;
+
 
   } else {
+
 
     drawWidth =
       canvasWidth;
 
+
     drawHeight =
-      drawWidth / imageRatio;
+      drawWidth /
+      imageRatio;
+
   }
 
 
   const x =
-    (canvasWidth - drawWidth) / 2;
+
+    (
+      canvasWidth -
+      drawWidth
+    ) / 2;
+
 
   const y =
-    (canvasHeight - drawHeight) / 2;
+
+    (
+      canvasHeight -
+      drawHeight
+    ) / 2;
 
 
   heroCtx.drawImage(
+
     img,
+
     x,
+
     y,
+
     drawWidth,
+
     drawHeight
+
   );
+
 }
 
 
 /* =========================================================
-   AUTOMATIC LOOP
+   AUTOMATIC ANIMATION
    ========================================================= */
 
 function startAutoPlay() {
 
+
+  /*
+     Prevent the animation from
+     accidentally starting twice.
+  */
+
   if (autoPlayStarted) {
+
     return;
+
   }
 
-  autoPlayStarted = true;
-  autoPlaying = true;
 
+  autoPlayStarted =
+    true;
+
+
+  autoPlaying =
+    true;
+
+
+  /*
+     IMPORTANT:
+
+     This starting point NEVER resets
+     when the animation reaches the end.
+
+     The modulo calculation below
+     creates a seamless continuous loop.
+  */
 
   const startTime =
     performance.now();
@@ -450,105 +830,152 @@ function startAutoPlay() {
 
   function animate(now) {
 
+
     if (!autoPlaying) {
+
       return;
+
     }
 
 
     /*
-       MODULO (%) makes the animation
-       restart automatically after reaching
-       the final frame.
+       Calculate where we are
+       inside the current loop.
 
-       So it becomes:
+       When elapsed reaches 9000ms:
 
-       1 → 83 → 1 → 83 → 1...
+       9000 % 9000 = 0
+
+       So the next frame starts
+       immediately from frame 1.
+
+       NO DELAY.
     */
 
     const elapsed =
-      (now - startTime) %
+
+      (
+        now -
+        startTime
+      ) %
       AUTO_PLAY_DURATION;
 
 
-    const rawProgress =
+    const progress =
+
       elapsed /
       AUTO_PLAY_DURATION;
 
 
     /*
-       Smooth easing.
+       Direct linear frame movement.
 
-       This prevents the animation from
-       looking too mechanical.
+       This prevents the animation
+       from slowing down at the end
+       before restarting.
+
+       Therefore:
+
+       001 → 002 → 003 → ... → 083
+       → 001 → 002 → 003 → ...
+
+       continuously.
     */
 
-    const easedProgress =
-      rawProgress < 0.5
-
-        ? 4 *
-          rawProgress *
-          rawProgress *
-          rawProgress
-
-        : 1 -
-          Math.pow(
-            -2 * rawProgress + 2,
-            3
-          ) / 2;
-
-
     targetFrame =
-      easedProgress *
+
+      progress *
       (TOTAL_FRAMES - 1);
 
 
     /*
-       Keep the text visible.
+       Keep ALL hero writing
+       permanently visible.
     */
 
     keepHeroTextVisible();
 
 
     /*
-       Update the small stage text.
+       Update stage indicator.
     */
 
     updateStageIndicator(
-      easedProgress
+      progress
     );
 
 
     requestAnimationFrame(
       animate
     );
+
   }
 
 
   requestAnimationFrame(
     animate
   );
+
 }
 
 
 /* =========================================================
-   KEEP HERO TEXT VISIBLE
+   HERO TEXT — ALWAYS VISIBLE
    ========================================================= */
 
 function keepHeroTextVisible() {
 
+
+  /*
+     MAIN HERO WRITING
+  */
+
   if (heroTitleBlock) {
 
-    heroTitleBlock.style.opacity = '1';
+
+    heroTitleBlock.style.opacity =
+      '1';
+
+
+    heroTitleBlock.style.visibility =
+      'visible';
+
+
+    heroTitleBlock.style.display =
+      'block';
+
+
+    /*
+       Do NOT allow JavaScript
+       to move the writing away.
+    */
 
     heroTitleBlock.style.transform =
       'translate(-50%, -50%)';
+
   }
 
+
+  /*
+     SCROLL TO EXPLORE
+  */
 
   if (heroScrollHint) {
 
-    heroScrollHint.style.opacity = '1';
+
+    heroScrollHint.style.opacity =
+      '1';
+
+
+    heroScrollHint.style.visibility =
+      'visible';
+
+
+    heroScrollHint.style.display =
+      'block';
+
   }
+
 }
 
 
@@ -556,10 +983,15 @@ function keepHeroTextVisible() {
    STAGE INDICATOR
    ========================================================= */
 
-function updateStageIndicator(progress) {
+function updateStageIndicator(
+  progress
+) {
+
 
   if (!stageIndicator) {
+
     return;
+
   }
 
 
@@ -569,9 +1001,12 @@ function updateStageIndicator(progress) {
 
 
   const frameIdx =
+
     Math.round(
+
       progress *
       (TOTAL_FRAMES - 1)
+
     );
 
 
@@ -585,48 +1020,99 @@ function updateStageIndicator(progress) {
     s++
   ) {
 
+
     if (
-      frameIdx >= STAGES[s].range[0] &&
-      frameIdx <= STAGES[s].range[1]
+
+      frameIdx >=
+      STAGES[s].range[0] &&
+
+      frameIdx <=
+      STAGES[s].range[1]
+
     ) {
+
 
       matchedStage =
         STAGES[s].name;
 
+
       break;
+
     }
+
   }
 
 
   if (
+
     stageIndicator.textContent !==
     matchedStage
+
   ) {
+
 
     stageIndicator.textContent =
       matchedStage;
+
   }
+
 }
 
 
 /* =========================================================
-   RENDER LOOP
+   FRAME RENDER LOOP
    ========================================================= */
 
 function render() {
 
+
   /*
-     Smoothly move currentFrame
-     toward targetFrame.
+     Smooth movement toward
+     the target frame.
+
+     This keeps the animation
+     visually smooth.
   */
 
   currentFrame +=
-    (targetFrame - currentFrame) *
-    0.12;
+
+    (
+      targetFrame -
+      currentFrame
+    ) *
+    0.18;
+
+
+  /*
+     Make sure the frame number
+     stays inside the valid range.
+  */
+
+  if (
+    currentFrame < 0
+  ) {
+
+    currentFrame = 0;
+
+  }
+
+
+  if (
+    currentFrame >
+    TOTAL_FRAMES - 1
+  ) {
+
+    currentFrame =
+      TOTAL_FRAMES - 1;
+
+  }
 
 
   const frameIndex =
-    Math.round(currentFrame);
+
+    Math.round(
+      currentFrame
+    );
 
 
   const frame =
@@ -634,18 +1120,23 @@ function render() {
 
 
   if (frame) {
-    drawFrame(frame);
+
+    drawFrame(
+      frame
+    );
+
   }
 
 
   requestAnimationFrame(
     render
   );
+
 }
 
 
 /*
-   Start rendering.
+   Start the visual renderer.
 */
 
 requestAnimationFrame(
@@ -660,32 +1151,41 @@ requestAnimationFrame(
 /*
    IMPORTANT:
 
-   Scrolling no longer controls
-   the animation.
+   SCROLL DOES NOT CONTROL
+   THE VIDEO.
 
-   The animation keeps playing by itself.
+   The animation continues playing
+   regardless of scrolling.
 
-   Scrolling simply moves the website
-   down to the Collection section.
+   Scrolling only moves the visitor
+   through the website.
 */
 
 function setupScrollListener() {
 
+
   window.addEventListener(
+
     'scroll',
+
     () => {
 
-      /*
-         Do nothing here.
 
-         Animation continues independently.
+      /*
+         Keep writing permanently visible.
       */
 
+      keepHeroTextVisible();
+
+
     },
+
     {
       passive: true
     }
+
   );
+
 }
 
 
@@ -695,51 +1195,78 @@ function setupScrollListener() {
 
 function setupNavigation() {
 
+
   const navLinks =
+
     document.querySelectorAll(
       'a[href^="#"]'
     );
 
 
-  navLinks.forEach(link => {
-
-    link.addEventListener(
-      'click',
-      event => {
-
-        const href =
-          link.getAttribute('href');
+  navLinks.forEach(
+    link => {
 
 
-        if (
-          !href ||
-          href === '#'
-        ) {
-          return;
+      link.addEventListener(
+
+        'click',
+
+        event => {
+
+
+          const href =
+            link.getAttribute(
+              'href'
+            );
+
+
+          if (
+
+            !href ||
+
+            href === '#'
+
+          ) {
+
+            return;
+
+          }
+
+
+          const target =
+
+            document.querySelector(
+              href
+            );
+
+
+          if (!target) {
+
+            return;
+
+          }
+
+
+          event.preventDefault();
+
+
+          target.scrollIntoView({
+
+            behavior:
+              'smooth',
+
+            block:
+              'start'
+
+          });
+
         }
 
+      );
 
-        const target =
-          document.querySelector(
-            href
-          );
+    }
+  );
 
-
-        if (!target) {
-          return;
-        }
-
-
-        event.preventDefault();
-
-
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    );
-  });
 }
 
 
@@ -749,35 +1276,50 @@ function setupNavigation() {
 
 function setupCollection() {
 
+
   const collection =
+
     document.querySelector(
       '#collection'
     );
 
 
   if (!collection) {
+
     return;
+
   }
 
 
   const productGrid =
+
     collection.querySelector(
       '.product-grid'
     );
 
 
   if (!productGrid) {
+
     return;
+
   }
 
 
-  productGrid.innerHTML = '';
+  /*
+     Clear existing products
+     before rebuilding.
+  */
+
+  productGrid.innerHTML =
+    '';
 
 
   PRODUCTS.forEach(
     product => {
 
+
       const card =
+
         createProductCard(
           product
         );
@@ -786,8 +1328,10 @@ function setupCollection() {
       productGrid.appendChild(
         card
       );
+
     }
   );
+
 }
 
 
@@ -795,10 +1339,16 @@ function setupCollection() {
    PRODUCT CARD
    ========================================================= */
 
-function createProductCard(product) {
+function createProductCard(
+  product
+) {
+
 
   const card =
-    document.createElement('article');
+
+    document.createElement(
+      'article'
+    );
 
 
   card.className =
@@ -850,6 +1400,7 @@ function createProductCard(product) {
 
 
   const button =
+
     card.querySelector(
       '.product-image-button'
     );
@@ -857,19 +1408,26 @@ function createProductCard(product) {
 
   if (button) {
 
+
     button.addEventListener(
+
       'click',
+
       () => {
 
         openProductModal(
           product.id
         );
+
       }
+
     );
+
   }
 
 
   return card;
+
 }
 
 
@@ -877,23 +1435,29 @@ function createProductCard(product) {
    PRODUCT MODAL
    ========================================================= */
 
-let productModal = null;
+let productModal =
+  null;
 
 
 function setupProductModal() {
 
+
   productModal =
+
     document.querySelector(
       '#product-modal'
     );
 
 
   if (!productModal) {
+
     return;
+
   }
 
 
   const closeButtons =
+
     productModal.querySelectorAll(
       '[data-close-modal]'
     );
@@ -902,83 +1466,125 @@ function setupProductModal() {
   closeButtons.forEach(
     button => {
 
+
       button.addEventListener(
+
         'click',
+
         closeProductModal
+
       );
+
     }
   );
 
 
   productModal.addEventListener(
+
     'click',
+
     event => {
+
 
       if (
         event.target ===
         productModal
       ) {
 
+
         closeProductModal();
+
       }
+
     }
+
   );
 
 
   document.addEventListener(
+
     'keydown',
+
     event => {
 
+
       if (
-        event.key === 'Escape'
+        event.key ===
+        'Escape'
       ) {
 
+
         closeProductModal();
+
       }
+
     }
+
   );
+
 }
 
 
 /* =========================================================
-   OPEN PRODUCT
+   OPEN PRODUCT MODAL
    ========================================================= */
 
-function openProductModal(productId) {
+function openProductModal(
+  productId
+) {
+
 
   const product =
+
     PRODUCTS.find(
+
       item =>
-        item.id === productId
+        item.id ===
+        productId
+
     );
 
 
-  if (!product || !productModal) {
+  if (
+    !product ||
+    !productModal
+  ) {
+
     return;
+
   }
 
 
   const image =
+
     productModal.querySelector(
       '[data-product-image]'
     );
 
+
   const name =
+
     productModal.querySelector(
       '[data-product-name]'
     );
 
+
   const price =
+
     productModal.querySelector(
       '[data-product-price]'
     );
 
+
   const description =
+
     productModal.querySelector(
       '[data-product-description]'
     );
 
+
   const sizeContainer =
+
     productModal.querySelector(
       '[data-product-sizes]'
     );
@@ -986,43 +1592,58 @@ function openProductModal(productId) {
 
   if (image) {
 
+
     image.src =
       product.image;
 
+
     image.alt =
       product.name;
+
   }
 
 
   if (name) {
+
+
     name.textContent =
       product.name;
+
   }
 
 
   if (price) {
 
+
     price.textContent =
       `$${product.price}`;
+
   }
 
 
   if (description) {
 
+
     description.textContent =
       'A considered Nigrum Stare piece shaped by precision, individuality and edge.';
+
   }
 
 
   if (sizeContainer) {
 
-    sizeContainer.innerHTML = '';
+
+    sizeContainer.innerHTML =
+      '';
 
 
     product.sizes.forEach(
+
       size => {
 
+
         const button =
+
           document.createElement(
             'button'
           );
@@ -1045,37 +1666,49 @@ function openProductModal(productId) {
 
 
         button.addEventListener(
+
           'click',
+
           () => {
+
 
             sizeContainer
               .querySelectorAll(
                 '.size-option'
               )
               .forEach(
+
                 item =>
+
                   item.classList.remove(
                     'selected'
                   )
+
               );
 
 
             button.classList.add(
               'selected'
             );
+
           }
+
         );
 
 
         sizeContainer.appendChild(
           button
         );
+
       }
+
     );
+
   }
 
 
   const addButton =
+
     productModal.querySelector(
       '[data-add-to-cart]'
     );
@@ -1083,19 +1716,27 @@ function openProductModal(productId) {
 
   if (addButton) {
 
+
     addButton.onclick = () => {
 
+
       const selectedSize =
+
         sizeContainer
+
           ? sizeContainer.querySelector(
               '.size-option.selected'
             )
+
           : null;
 
 
       const size =
+
         selectedSize
+
           ? selectedSize.dataset.size
+
           : product.sizes[0];
 
 
@@ -1106,7 +1747,9 @@ function openProductModal(productId) {
 
 
       closeProductModal();
+
     };
+
   }
 
 
@@ -1118,6 +1761,7 @@ function openProductModal(productId) {
   document.body.classList.add(
     'modal-open'
   );
+
 }
 
 
@@ -1127,8 +1771,11 @@ function openProductModal(productId) {
 
 function closeProductModal() {
 
+
   if (!productModal) {
+
     return;
+
   }
 
 
@@ -1140,6 +1787,7 @@ function closeProductModal() {
   document.body.classList.remove(
     'modal-open'
   );
+
 }
 
 
@@ -1149,13 +1797,16 @@ function closeProductModal() {
 
 function setupCart() {
 
+
   const cartButton =
+
     document.querySelector(
       '[data-cart]'
     );
 
 
   const cartClose =
+
     document.querySelector(
       '[data-close-cart]'
     );
@@ -1163,23 +1814,28 @@ function setupCart() {
 
   if (cartButton) {
 
+
     cartButton.addEventListener(
       'click',
       openCart
     );
+
   }
 
 
   if (cartClose) {
 
+
     cartClose.addEventListener(
       'click',
       closeCart
     );
+
   }
 
 
   const checkoutButton =
+
     document.querySelector(
       '[data-checkout]'
     );
@@ -1187,14 +1843,17 @@ function setupCart() {
 
   if (checkoutButton) {
 
+
     checkoutButton.addEventListener(
       'click',
       checkout
     );
+
   }
 
 
   const cartDrawer =
+
     document.querySelector(
       '#cart-drawer'
     );
@@ -1202,20 +1861,30 @@ function setupCart() {
 
   if (cartDrawer) {
 
+
     cartDrawer.addEventListener(
+
       'click',
+
       event => {
+
 
         if (
           event.target ===
           cartDrawer
         ) {
 
+
           closeCart();
+
         }
+
       }
+
     );
+
   }
+
 }
 
 
@@ -1228,45 +1897,67 @@ function addToCart(
   size
 ) {
 
+
   const existing =
+
     cart.find(
+
       item =>
-        item.id === product.id &&
-        item.size === size
+
+        item.id ===
+        product.id &&
+
+        item.size ===
+        size
+
     );
 
 
   if (existing) {
 
-    existing.quantity += 1;
+
+    existing.quantity +=
+      1;
+
 
   } else {
 
+
     cart.push({
 
-      id: product.id,
+      id:
+        product.id,
 
-      name: product.name,
+      name:
+        product.name,
 
-      price: product.price,
+      price:
+        product.price,
 
-      image: product.image,
+      image:
+        product.image,
 
-      size: size,
+      size:
+        size,
 
-      quantity: 1
+      quantity:
+        1
 
     });
+
   }
 
 
   saveCart();
 
+
   updateCartUI();
+
 
   showToast(
     `${product.name} added to cart`
   );
+
 }
 
 
@@ -1276,20 +1967,34 @@ function addToCart(
 
 function saveCart() {
 
+
   try {
 
+
     localStorage.setItem(
+
       CART_STORAGE_KEY,
-      JSON.stringify(cart)
+
+      JSON.stringify(
+        cart
+      )
+
     );
+
 
   } catch (error) {
 
+
     console.warn(
+
       'Could not save cart:',
+
       error
+
     );
+
   }
+
 }
 
 
@@ -1299,60 +2004,84 @@ function saveCart() {
 
 function updateCartUI() {
 
+
   const cartItems =
+
     document.querySelector(
       '[data-cart-items]'
     );
 
 
   const cartCount =
+
     document.querySelectorAll(
       '[data-cart-count]'
     );
 
 
   const cartTotal =
+
     document.querySelector(
       '[data-cart-total]'
     );
 
 
   const totalQuantity =
+
     cart.reduce(
+
       (total, item) =>
-        total + item.quantity,
+
+        total +
+        item.quantity,
+
       0
+
     );
 
 
   cartCount.forEach(
+
     element => {
+
 
       element.textContent =
         totalQuantity;
+
     }
+
   );
 
 
   if (cartItems) {
 
-    cartItems.innerHTML = '';
+
+    cartItems.innerHTML =
+      '';
 
 
     if (cart.length === 0) {
 
+
       cartItems.innerHTML = `
+
         <p class="cart-empty">
           YOUR CART IS EMPTY.
         </p>
+
       `;
+
 
     } else {
 
+
       cart.forEach(
+
         item => {
 
+
           const cartItem =
+
             document.createElement(
               'div'
             );
@@ -1416,36 +2145,51 @@ function updateCartUI() {
               </div>
 
             </div>
+
           `;
 
 
           cartItems.appendChild(
             cartItem
           );
+
         }
+
       );
 
 
       setupCartItemButtons();
+
     }
+
   }
 
 
   if (cartTotal) {
 
+
     const total =
+
       cart.reduce(
+
         (sum, item) =>
+
           sum +
-          item.price *
-          item.quantity,
+          (
+            item.price *
+            item.quantity
+          ),
+
         0
+
       );
 
 
     cartTotal.textContent =
       `$${total.toFixed(2)}`;
+
   }
+
 }
 
 
@@ -1455,74 +2199,120 @@ function updateCartUI() {
 
 function setupCartItemButtons() {
 
+
   document
+
     .querySelectorAll(
       '[data-cart-plus]'
     )
+
     .forEach(
+
       button => {
 
+
         button.addEventListener(
+
           'click',
+
           () => {
 
+
             changeCartQuantity(
+
               button.dataset.cartPlus,
+
               button.dataset.cartSize,
+
               1
+
             );
+
           }
+
         );
+
       }
+
     );
 
 
   document
+
     .querySelectorAll(
       '[data-cart-minus]'
     )
+
     .forEach(
+
       button => {
 
+
         button.addEventListener(
+
           'click',
+
           () => {
 
+
             changeCartQuantity(
+
               button.dataset.cartMinus,
+
               button.dataset.cartSize,
+
               -1
+
             );
+
           }
+
         );
+
       }
+
     );
 
 
   document
+
     .querySelectorAll(
       '[data-cart-remove]'
     )
+
     .forEach(
+
       button => {
 
+
         button.addEventListener(
+
           'click',
+
           () => {
 
+
             removeFromCart(
+
               button.dataset.cartRemove,
+
               button.dataset.cartSize
+
             );
+
           }
+
         );
+
       }
+
     );
+
 }
 
 
 /* =========================================================
-   CHANGE QUANTITY
+   CHANGE CART QUANTITY
    ========================================================= */
 
 function changeCartQuantity(
@@ -1531,38 +2321,62 @@ function changeCartQuantity(
   change
 ) {
 
+
   const item =
+
     cart.find(
+
       cartItem =>
-        cartItem.id === productId &&
-        cartItem.size === size
+
+        cartItem.id ===
+        productId &&
+
+        cartItem.size ===
+        size
+
     );
 
 
   if (!item) {
+
     return;
+
   }
 
 
-  item.quantity += change;
+  item.quantity +=
+    change;
 
 
-  if (item.quantity <= 0) {
+  if (
+    item.quantity <= 0
+  ) {
+
 
     cart =
+
       cart.filter(
+
         cartItem =>
+
           !(
-            cartItem.id === productId &&
-            cartItem.size === size
+            cartItem.id ===
+            productId &&
+
+            cartItem.size ===
+            size
           )
+
       );
+
   }
 
 
   saveCart();
 
+
   updateCartUI();
+
 }
 
 
@@ -1575,19 +2389,29 @@ function removeFromCart(
   size
 ) {
 
+
   cart =
+
     cart.filter(
+
       item =>
+
         !(
-          item.id === productId &&
-          item.size === size
+          item.id ===
+          productId &&
+
+          item.size ===
+          size
         )
+
     );
 
 
   saveCart();
 
+
   updateCartUI();
+
 }
 
 
@@ -1597,14 +2421,18 @@ function removeFromCart(
 
 function openCart() {
 
+
   const cartDrawer =
+
     document.querySelector(
       '#cart-drawer'
     );
 
 
   if (!cartDrawer) {
+
     return;
+
   }
 
 
@@ -1616,6 +2444,7 @@ function openCart() {
   document.body.classList.add(
     'cart-open'
   );
+
 }
 
 
@@ -1625,14 +2454,18 @@ function openCart() {
 
 function closeCart() {
 
+
   const cartDrawer =
+
     document.querySelector(
       '#cart-drawer'
     );
 
 
   if (!cartDrawer) {
+
     return;
+
   }
 
 
@@ -1644,6 +2477,7 @@ function closeCart() {
   document.body.classList.remove(
     'cart-open'
   );
+
 }
 
 
@@ -1653,22 +2487,27 @@ function closeCart() {
 
 function checkout() {
 
+
   if (cart.length === 0) {
+
 
     showToast(
       'Your cart is empty'
     );
 
+
     return;
+
   }
 
 
   /*
-     Existing Paystack checkout.
+     PAYSTACK
   */
 
   window.location.href =
     'https://paystack.shop/pay/yw9q-sw7y7';
+
 }
 
 
@@ -1678,52 +2517,81 @@ function checkout() {
 
 function setupIntersectionObserver() {
 
+
   const elements =
+
     document.querySelectorAll(
       '[data-reveal]'
     );
 
 
   if (
+
     !elements.length ||
-    !('IntersectionObserver' in window)
+
+    !(
+      'IntersectionObserver'
+      in window
+    )
+
   ) {
+
     return;
+
   }
 
 
   const observer =
+
     new IntersectionObserver(
+
       entries => {
 
+
         entries.forEach(
+
           entry => {
+
 
             if (
               entry.isIntersecting
             ) {
 
+
               entry.target.classList.add(
                 'is-visible'
               );
 
+
               observer.unobserve(
                 entry.target
               );
+
             }
+
           }
+
         );
+
       },
+
       {
         threshold: 0.15
       }
+
     );
 
 
   elements.forEach(
+
     element =>
-      observer.observe(element)
+
+      observer.observe(
+        element
+      )
+
   );
+
 }
 
 
@@ -1732,42 +2600,57 @@ function setupIntersectionObserver() {
    ========================================================= */
 
 document.addEventListener(
+
   'click',
+
   event => {
 
+
     const link =
+
       event.target.closest(
         'a[href^="#"]'
       );
 
 
     if (!link) {
+
       return;
+
     }
 
 
     const href =
+
       link.getAttribute(
         'href'
       );
 
 
     if (
+
       !href ||
+
       href === '#'
+
     ) {
+
       return;
+
     }
 
 
     const target =
+
       document.querySelector(
         href
       );
 
 
     if (!target) {
+
       return;
+
     }
 
 
@@ -1775,10 +2658,17 @@ document.addEventListener(
 
 
     target.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
+
+      behavior:
+        'smooth',
+
+      block:
+        'start'
+
     });
+
   }
+
 );
 
 
@@ -1786,15 +2676,20 @@ document.addEventListener(
    TOAST
    ========================================================= */
 
-function showToast(message) {
+function showToast(
+  message
+) {
+
 
   let toast =
+
     document.querySelector(
       '.ns-toast'
     );
 
 
   if (!toast) {
+
 
     toast =
       document.createElement(
@@ -1809,6 +2704,7 @@ function showToast(message) {
     document.body.appendChild(
       toast
     );
+
   }
 
 
@@ -1827,16 +2723,23 @@ function showToast(message) {
 
 
   toast._timeout =
+
     setTimeout(
+
       () => {
+
 
         toast.classList.remove(
           'show'
         );
 
+
       },
+
       2500
+
     );
+
 }
 
 
@@ -1845,27 +2748,33 @@ function showToast(message) {
    ========================================================= */
 
 window.addEventListener(
+
   'load',
+
   () => {
 
+
     /*
-       Make absolutely sure
-       the hero text stays visible.
+       Keep hero text visible.
     */
 
     keepHeroTextVisible();
 
 
     /*
-       If the first frame wasn't loaded
-       during DOMContentLoaded, try again.
+       If frames haven't started loading,
+       start loading them again.
     */
 
     if (
       frameImages.length === 0
     ) {
 
+
       preloadFrames();
+
     }
+
   }
+
 );
